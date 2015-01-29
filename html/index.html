@@ -2,6 +2,7 @@
 <head>
   <title> Bingo Protocol </title>
   <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="../css/bootstrap.min.css">
   <script>
   	var gui = require("nw.gui");
 
@@ -9,7 +10,35 @@
 </head>
 
 <body  style="-webkit-app-region: drag">
-	<h1>Bingo</h1>
+
+	<div class="container">
+		
+		<nav class="navbar navbar-default">
+			<div class="container-fluid">
+				<div class="navbar-header">
+					<a href="#" class="navbar-brand">BingoJS</a>
+				</div>
+				<div id="navbar" class="navbar-collapse collapse">
+					<ul class="nav navbar-nav navbar-right">
+						<li><a href="#">Unirse</a></li>
+						<li><a href="#">Crear</a></li>
+					</ul>
+				</div>
+			</div>
+		</nav>
+
+		<div class="jumbotron">
+			<h1>BingoJS</h1>
+			<p>Ahora puedes jugar Bingo desde cualquier parte del mundo</p>					
+			
+			<p>
+				<a href="#" class="btn btn-success">Nueva partida</a>
+				<a href="#" class="btn btn-primary">Unirse a partida</a>
+			</p>
+		</div>
+	</div>
+	
+	<!--<h1>Bingo</h1>
 	<input type="text">
 	<table>
 		<tr>
@@ -75,7 +104,7 @@
 		sender.close();
 	});
 
-</script>  
+</script>  -->
 
 </body>
 </html>
