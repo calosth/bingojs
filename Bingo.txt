@@ -1,0 +1,39 @@
+Conexion:				  Protocolo 	T. Mensaje	Contenido del mensaje:
+100 Solicitud de conexion						IP,Cliente
+101 Respuesta conexion							IDJuego
+102 Solicitud de carton							NroCartones
+103 Envio de carton							IDCarton,Numeros
+104 Validacion de carton del cliente					(Deprecated - no se utilizará)
+105 Anuncio de Sala				UDP	Broadcast	IP,Sala
+106 Fin de conexion					Unicast		IDJuego/Motivo
+
+
+Error:
+200 Error de conexion							IP,Servidor,TipoError
+201 Carton invalido							IDCarton,Motivo
+202 Bingo invalido							IDCarton,Motivo
+
+
+Informacion:
+300 Inicio de juego				UDP	Multicast	IDJuego
+301 Fin de juego				UDP	Multicast	IDJuego
+302 Bingo cantado - servidor			UDP	Multicast	IDJuego
+303 Bingo vertical							IDCarton,Numeros,Aciertos
+304 Bingo horizontal							IDCarton,Numeros,Aciertos
+305 Bingo diagonal							IDCarton,Numeros,Aciertos
+306 Carton lleno							IDCarton,Numeros,Aciertos
+307 Bingo aceptado - servidor			UDP	Multicast	IP,Cliente,TipoBingo,IDJuego
+308 Cantar numero				UDP	Multicast	NroJugada,Numero,IDJuego
+309 Solicitar jugada							NroJugada
+310 Repartir jugada							NroJugada,Numero
+
+
+Reglas:
+- Aplicacion Cliente / Servidor.
+- Servidor genera carton.
+- Validacion de carton en MD5.
+- Maximo de 5 cartones por cliente.
+- 5 segundos entre canto de numeros.
+- Puerto a usar TCP 10022.
+- Puerto a usar UDP 10022.
+- JSON para codificacion y decodificaion de mensajes.
