@@ -10,7 +10,7 @@
   	"min_width": 800,
     "min_height": 600,
     "max_width": 1000,
-    "max_height": 800,
+    "max_height": 600,
     "position": "center"  
   }
 }
