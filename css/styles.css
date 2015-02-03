@@ -4,9 +4,9 @@ body{
 	background-color: white;
 }
 
-.jumbotron{
+/*.jumbotron{
 	margin-top: 1rem;
-}
+}*/
 
 .footer{
 	position: absolute;
@@ -14,5 +14,9 @@ body{
 	width: 100%;
 	height: 60px;
 	border-top: 1px solid rgba(0,0,0,.5);
+}
+
+.margin-top{
+	margin-top: 1rem;
 }
 
