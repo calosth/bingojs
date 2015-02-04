@@ -1,6 +1,9 @@
+
+var dgram = require('dgram');
 var network = {
 
 	listMessage: [1,2,3],
+	udp: dgram.createSocket('udp4'),
 
 	clientUDP: function(port){
 		
@@ -15,7 +18,7 @@ var network = {
 		});
 
 		client.on('message',function(message,remote){
-			// console.log(remote.address + ':' + remote.port + ' - ' + message);
+			console.log(remote.address + ':' + remote.port + ' - ' + message);
 			console.log(this)
 		});
 
