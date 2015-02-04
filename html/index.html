@@ -19,8 +19,12 @@
 			</div>
 			<div id="navbar" class="navbar-collapse collapse">
 				<ul class="nav navbar-nav navbar-right">
-					<li><a href="unirse.html"><span class="glyphicon glyphicon-th" aria-hidden="true"></span></a></li>
-					<li><a href="jugar.html"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a></li>
+					<li>
+						<a  href="unirse.html" >
+							<span class="glyphicon glyphicon-th" aria-hidden="true"></span>
+						</a>
+					</li>
+					<li><a href="crear.html"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a></li>
 				</ul>
 			</div>
 		</div>
@@ -37,79 +41,6 @@
 		</div>
 
 	</div>
-<!-- 	<footer class="footer">
-		<div class="container">
-			<p class="text-muted">Aquí va el footer</p>
-		</div>	
-	</footer> -->
-	
-	<!--<h1>Bingo</h1>
-	<input type="text">
-	<table>
-		<tr>
-			<td>1</td>
-			<td>2</td>
-			<td>3</td>
-			<td>4</td>
-		</tr>
-		<tr>
-			<td>5</td>
-			<td>6</td>
-			<td>7</td>
-			<td>21</td>
-		</tr>
-		<tr>
-			<td>32</td>
-			<td>12</td>
-			<td>42</td>
-			<td>64</td>
-		</tr>
-		<tr>
-			<td>65</td>
-			<td>43</td>
-			<td>12</td>
-			<td>32</td>
-		</tr>
-		<tr>
-			<td>67</td>
-			<td>45</td>
-			<td>34</td>
-			<td>12</td>
-		</tr>
-
-	</table>
-<script>
-
-	var dgram = require('dgram');
-	var listener = dgram.createSocket('udp4');
-	var sender = dgram.createSocket('udp4');
-
-	listener.on('listening', function(){
-		var address = listener.address();
-		console.log('UDP Server Listening on ' + address.address+ ':' +address.port);
-	});
-	listener.on('message',function(message,remote){
-		console.log(remote.address + ':' + remote.port + ' - ' + message);
-		alert(message);
-	});
-	listener.bind();
-
-
-	var PORT = 41234;
-	var HOST = '255.255.255.255';
-	var message = new Buffer('{hola:"hola"}');
-
-	sender.bind(function(){
-		sender.setBroadcast(true);
-	});
-
-	sender.send(message, 0, message.length, PORT, HOST,	function(err, bytes){
-		if(err) throw err;
-		console.log('UDP message sent to ' + HOST + ' : ' + PORT);
-		sender.close();
-	});
-
-</script>  -->
 
 </body>
 </html>
