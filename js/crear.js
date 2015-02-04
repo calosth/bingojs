@@ -1,4 +1,7 @@
 
+var infoJuego = {}
+
+
 var os = require('os');
 var ifaces = os.networkInterfaces();
 
@@ -16,27 +19,31 @@ $("#maximoCartones").on('click',function(){
 
 $("#submit").on('click',function(){
 	
-	var nombrePartida = $("#nombrePartida").val();
-	var maximoDePersonas = $("#maximoPersonas").val();
-	var maximoDeCartones = $("#maximoCartones").val();
+ 
+	infoJuego.nombrePartida    = $("#nombrePartida").val();
+	infoJuego.maximoDePersonas = $("#maximoPersonas").val();
+	infoJuego.maximoDeCartones = $("#maximoCartones").val();	
+	global.infoJuego = infoJuego
 
 	var json = {
 		'code': 105,
 		'contenido': {
 			'ip': ifaces.en1[1].address,
-			'sala': nombrePartida,
-			'maxPersonas': maximoDePersonas,
-			'maxCartones': maximoDeCartones
+			'sala': infoJuego.nombrePartida,
+			'maxPersonas': infoJuego.maximoDePersonas,
+			'maxCartones': infoJuego.maximoDeCartones
 		},
 	};
 
-	if(nombrePartida==''){
+	console.log(json)
+
+	if(infoJuego.nombrePartida==''){
 		$("#nombrePartida").parent().addClass("has-error");
 	}
-	else if(maximoDePersonas==''){		
+	else if(infoJuego.maximoDePersonas==''){		
 		$("#maximoPersonas").parent().addClass("has-error");
 	}
-	else if(maximoDeCartones==''){		
+	else if(infoJuego.maximoDeCartones==''){		
 		$("#maximoCartones").parent().addClass("has-error");
 	}
 	else{
