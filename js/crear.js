@@ -4,7 +4,7 @@ var infoJuego = {}
 
 var os = require('os');
 var ifaces = os.networkInterfaces();
-
+global.ip = ifaces.en1[1].address
 var port = 41234;
 
 $("#nombrePartida").on('click',function(){

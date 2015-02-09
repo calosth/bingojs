@@ -2,15 +2,37 @@
   "name": "bingojs",
   "main": "./html/index.html",
   "window": {
-  	"title": "BingoProtocol",
+    "title": "BingoProtocol",
     // "frame": false,
     // "toolbar": false,
     "width": 1000,
     "height": 600,
-  	"min_width": 800,
+    "min_width": 800,
     "min_height": 600,
     "max_width": 1000,
     "max_height": 600,
     "position": "center"  
-  }
+  },
+  "dependencies": {
+    "async": "0.9.0"
+  },
+  "version": "0.0.0",
+  "description": "",
+  "dependencies": {
+    "async": "^0.9.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/calosth/bingojs.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/calosth/bingojs/issues"
+  },
+  "homepage": "https://github.com/calosth/bingojs"
 }
