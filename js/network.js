@@ -4,7 +4,7 @@ var network = {
 
 	listMessage: [1,2,3],
 	udp: dgram.createSocket('udp4'),
-
+	 net: require('net'),
 	clientUDP: function(port){
 		
 		var dgram = require('dgram');
@@ -75,7 +75,6 @@ var network = {
 
 	},
 	serverTCP: function(json, ip, port){
-		var net = require('net');
 
 		var HOST = ip;
 		var PORT = port;
