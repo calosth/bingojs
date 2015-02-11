@@ -1,6 +1,9 @@
 
 var IPes = [];
 
+var net = require('net');
+var client = new net.Socket();
+
 network.udp.on('message',function(message,remote){
 	// console.log("Mensaje = " + message) 
 	mensaje = JSON.parse(message);
@@ -14,16 +17,25 @@ network.udp.on('message',function(message,remote){
 			html = html + '<h3>'+ mensaje.contenido.sala +'</h3>';
 			html = html + '<p> IP: ' + mensaje.contenido.ip + '<p>';
 			html = html + '<p> Máximo Cartones: ' + mensaje.contenido.maxCartones + '</p>';
-			html = html + '<button type="button" class="btn btn-success btn-sm">Unirse</button></a></div>';
+			html = html + '<button type="button" class="btn btn-success btn-sm btn-join"';
+			html = html + 'data-ip=' + mensaje.contenido.ip;
+			html = html + '>Unirse</button></a></div>';
 
 			$("#content-partidas").append(html);
 
 			IPes.push(mensaje.contenido.ip);
 
+			$(".btn-join").on("click",function (){
+
+				
+
+			});
 		}
 		// console.log(mensaje);
-	}
+	}	
 
 });
+
+
 
 network.udp.bind(41234);

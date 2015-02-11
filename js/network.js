@@ -49,6 +49,7 @@ var network = {
 		var PORT = port;
 
 		var client = new net.Socket();
+		
 		client.connect(PORT, HOST, function() {
 
 		    console.log('CONNECTED TO: ' + HOST + ':' + PORT);
