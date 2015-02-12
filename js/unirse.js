@@ -1,8 +1,44 @@
 
 var IPes = [];
 
-var net = require('net');
-var client = new net.Socket();
+var conexionInicio = function(ip, port){
+
+	var HOST = ip;
+	var PORT = port;
+
+	var client = new network.net.Socket();
+
+	var json = {
+
+		'code':'100',
+		'ip':ip,
+		'cliente':'carlitosTQM',
+
+	};
+
+	var mensaje = JSON.stringify(json);
+	
+	client.connect(PORT, HOST, function() {
+
+		client.write(mensaje);
+
+	});
+
+	client.on('data', function(data){
+
+		var mensaje = JSON.parse(data);
+		console.log(mensaje);
+
+		if(mensaje.code == '101'){
+
+			// client.destroy();
+			window.location.href = "index.html";
+
+		}
+
+	});
+
+};
 
 network.udp.on('message',function(message,remote){
 	// console.log("Mensaje = " + message) 
@@ -27,7 +63,7 @@ network.udp.on('message',function(message,remote){
 
 			$(".btn-join").on("click",function (){
 
-				
+				conexionInicio($(this).data("ip"), 10022);
 
 			});
 		}

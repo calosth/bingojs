@@ -4,7 +4,7 @@ var network = {
 
 	listMessage: [1,2,3],
 	udp: dgram.createSocket('udp4'),
-	 net: require('net'),
+	net: require('net'),
 	clientUDP: function(port){
 		
 		var dgram = require('dgram');
@@ -64,7 +64,7 @@ var network = {
 		    
 		    console.log('DATA: ' + data);
 		    // Close the client socket completely
-		    client.destroy();
+		    // client.destroy();
 		    
 		});
 
