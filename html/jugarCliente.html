@@ -2,9 +2,167 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
+	<link rel="stylesheet" href="../css/styles.css">
+	<link rel="stylesheet" href="../css/bootstrap.min.css">
 	<title>BingoJS</title>
 </head>
 <body>
-	
+	<nav class="navbar navbar-default navbar-static-top">
+		<div class="container">
+			<div class="navbar-header">
+				<a href="#" class="navbar-brand">BingoJS</a>
+			</div>
+			<div id="navbar" class="navbar-collapse collapse">
+				<ul class="nav navbar-nav navbar-right">
+					<li><a href="unirse.html"><span class="glyphicon glyphicon-th" aria-hidden="true"></span></a></li>
+					<li><a href="jugar.html"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a></li>
+				</ul>
+			</div>
+		</div>
+	</nav>	
+
+	<div class="container">
+		<div class="row">
+			<div class="text-center">
+				<h2>Bingo</h2>
+			</div>
+		</div>
+
+		<div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+		  <div class="modal-dialog modal-sm">
+		    <div class="modal-content">
+				...
+		    </div>
+		  </div>
+		</div>
+
+<!-- 		<div class="row">
+			
+		  <div class="col-xs-6 col-md-4 well alert-success">		  	
+			<table class="table table-bordered text-center white">
+				<thead>
+					<th colspan="5" class="warning text-center">Cartón 1</th>
+				</thead>
+				<tr>
+					<td class="danger">B</td>
+					<td class="danger">I</td>
+					<td class="danger">N</td>
+					<td class="danger">G</td>
+					<td class="danger">O</td>
+				</tr>
+				<tr>
+					<td>12</td>
+					<td>18</td>
+					<td>41</td>
+					<td>47</td>
+					<td>61</td>
+				</tr>
+				<tr>
+					<td>7</td>
+					<td>26</td>
+					<td>31</td>
+					<td>54</td>
+					<td>70</td>
+				</tr>
+				<tr>
+					<td>4</td>
+					<td>27</td>
+					<td class="success"><h5>Free</h5></td>
+					<td>49</td>
+					<td>63</td>
+				</tr>
+				<tr>
+					<td>5</td>
+					<td>23</td>
+					<td>35</td>
+					<td>58</td>
+					<td>73</td>
+				</tr>
+				<tr>
+					<td>3</td>
+					<td>30</td>
+					<td>32</td>
+					<td>52</td>
+					<td>75</td>
+				</tr>
+			</table>
+		  </div>	
+
+		  <div class="col-xs-6 col-md-4 well alert-success">		  	
+			<table class="table table-bordered text-center white">
+				<thead>
+					<th colspan="5" class="warning text-center">Cartón 1</th>
+				</thead>
+				<tr>
+					<td class="danger">B</td>
+					<td class="danger">I</td>
+					<td class="danger">N</td>
+					<td class="danger">G</td>
+					<td class="danger">O</td>
+				</tr>
+				<tr>
+					<td>12</td>
+					<td>18</td>
+					<td>41</td>
+					<td>47</td>
+					<td>61</td>
+				</tr>
+				<tr>
+					<td>7</td>
+					<td>26</td>
+					<td>31</td>
+					<td>54</td>
+					<td>70</td>
+				</tr>
+				<tr>
+					<td>4</td>
+					<td>27</td>
+					<td class="success"><h5>Free</h5></td>
+					<td>49</td>
+					<td>63</td>
+				</tr>
+				<tr>
+					<td>5</td>
+					<td>23</td>
+					<td>35</td>
+					<td>58</td>
+					<td>73</td>
+				</tr>
+				<tr>
+					<td>3</td>
+					<td>30</td>
+					<td>32</td>
+					<td>52</td>
+					<td>75</td>
+				</tr>
+			</table>
+		  </div>	
+
+		</div>	 -->
+		<!-- Numero jugados ON -->
+		<div class="row">
+			<div class="text-center lead">
+				Últimos Numeros
+			</div>
+			<div class="col-md-10 col-md-offset-1 alert alert-dismissable alert-warning">
+				<ul class="nav nav-pills">
+					<li><span class="badge">12</span></li>
+					<li><span class="badge">3</span></li>
+					<li><span class="badge">75</span></li>
+					<li><span class="badge">27</span></li>
+					<li><span class="badge">4</span></li>
+					<li><span class="badge">31</span></li>
+				</ul>
+			</div>
+		</div>
+		<!-- Numero jugados OFF -->
+		<script src="../js/jquery.js"></script>
+		<script src="../js/network.js"></script>
+		<script src="../js/jugarCliente.js"></script>
+		<script>
+			$('#myModal').modal({
+			  show: true
+			})
+		</script>
 </body>
 </html>

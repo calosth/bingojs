@@ -16,6 +16,9 @@ var conexionInicio = function(ip, port){
 
 	};
 
+	console.log(ip);
+	global.IPserver = ip;
+
 	var mensaje = JSON.stringify(json);
 	
 	client.connect(PORT, HOST, function() {
@@ -32,7 +35,7 @@ var conexionInicio = function(ip, port){
 		if(mensaje.code == '101'){
 
 			// client.destroy();
-			window.location.href = "index.html";
+			window.location.href = "jugarCliente.html";
 
 		}
 
