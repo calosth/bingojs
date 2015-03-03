@@ -28,15 +28,28 @@
 			</div>
 		</div>
 
-		<div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+		<div id="myModal" class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
 		  <div class="modal-dialog modal-sm">
 		    <div class="modal-content">
-				...
+				<div class="modal-header">
+					<h4>Cartones a pedir</h4>
+				</div>
+				<div class="modal-body">
+					<form action="">
+						<div class="form-group">
+							<label for="numero">Cantidad</label>
+							<input type="text" name="form-control" id="numero" placeholder="1">
+						</div>
+					</form>
+				</div>		
+				<div class="modal-footer">
+					<button type="button" id="aceptarNumero" class="btn btn-success" data-dismiss="modal">Aceptar</button>
+				</div>		
 		    </div>
 		  </div>
 		</div>
 
-<!-- 		<div class="row">
+		<div class="row">
 			
 		  <div class="col-xs-6 col-md-4 well alert-success">		  	
 			<table class="table table-bordered text-center white">
@@ -138,7 +151,7 @@
 			</table>
 		  </div>	
 
-		</div>	 -->
+		</div>	
 		<!-- Numero jugados ON -->
 		<div class="row">
 			<div class="text-center lead">
@@ -157,12 +170,12 @@
 		</div>
 		<!-- Numero jugados OFF -->
 		<script src="../js/jquery.js"></script>
+		<script src="../js/underscore.js"></script>
+		<script src="../js/bootstrap.min.js"></script>
 		<script src="../js/network.js"></script>
 		<script src="../js/jugarCliente.js"></script>
 		<script>
-			$('#myModal').modal({
-			  show: true
-			})
+			$('#myModal').modal('show');
 		</script>
 </body>
 </html>
