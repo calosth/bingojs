@@ -49,9 +49,9 @@
 		  </div>
 		</div>
 
-		<div class="row">
+		<div class="row" id="boards-content">
 			
-		  <div class="col-xs-6 col-md-4 well alert-success">		  	
+<!-- 		  <div class="col-xs-6 col-md-4 well alert-success">		  	
 			<table class="table table-bordered text-center white">
 				<thead>
 					<th colspan="5" class="warning text-center">Cartón 1</th>
@@ -149,7 +149,7 @@
 					<td>75</td>
 				</tr>
 			</table>
-		  </div>	
+		  </div>	 -->
 
 		</div>	
 		<!-- Numero jugados ON -->
@@ -174,8 +174,41 @@
 		<script src="../js/bootstrap.min.js"></script>
 		<script src="../js/network.js"></script>
 		<script src="../js/jugarCliente.js"></script>
-		<script>
+		<script>			
 			$('#myModal').modal('show');
 		</script>
+
+		<script type="text/template" class="template">
+			<div class="col-xs-6 col-md-4 well alert-success">		  	
+			<table class="table table-bordered text-center white">
+				<thead>
+					<th colspan="5" class="warning text-center"> Cartón <%= IDCarton %> </th>
+				</thead>
+				<tr>
+					<td class="danger">B</td>
+					<td class="danger">I</td>
+					<td class="danger">N</td>
+					<td class="danger">G</td>
+					<td class="danger">O</td>
+				</tr>
+
+				<% for (var i = 0; i < 5; i++) { %>
+						<tr>
+						<% for (var j = 0; j < 5; j++) { %>
+							<% if ( i == 2 && j == 2 ) { %>
+								<td class="success">
+									<h5>Free</h5>
+								</td>
+							<% } else { %>
+								<td data-number="<%= Numeros[j][i]%>"><%= Numeros[j][i] %></td>
+							<% } %>							
+						<% } %>
+						</tr>
+				<% } %>	
+
+			</table>
+		  </div>	
+		</script>
+
 </body>
 </html>

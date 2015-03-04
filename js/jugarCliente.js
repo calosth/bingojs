@@ -1,3 +1,4 @@
+_.templateSettings.variable = 'board';
 var quantity = '';
 
 var conexion = function(ip, port){
@@ -31,9 +32,10 @@ var conexion = function(ip, port){
 			//Cuando recibe los cartones
 			case '103':
 
-				for(i in message.cartones)
-
-					console.log(message.cartones[i].Numeros[1][1]);
+				for(i in message.cartones){
+					var template = _.template( $('script.template').html() );
+					$('#boards-content').before( template( message.cartones[i] ) );					
+				}		
 				
 				break;
 
@@ -44,7 +46,6 @@ var conexion = function(ip, port){
 	});
 
 };
-
 
 $('#aceptarNumero').on('click',function(){
 
