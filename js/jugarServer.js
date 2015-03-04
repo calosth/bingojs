@@ -1,3 +1,11 @@
+// Assets
+function getRandomInt(min, max) {
+  return Math.floor(Math.random() * (max - min)) + min;
+}
+
+var port = 41234;
+
+
 function tcp(ip, port){
 		var net = network.net
 		var HOST = ip;
@@ -24,6 +32,26 @@ function tcp(ip, port){
 		        		};
 		        		// var message = new Buffer(json);
 				        sock.write(JSON.stringify(json));
+				    case '102':
+				    	var countCard = message.NroCartones;
+				    	var cards = [];
+				    	for (var i = 0; i < countCard; i++) {				    		
+			    			var min = 1, max = 15;
+			    			var card = []
+				    		for (var j = 0; j < 5; j++) {
+				    			var row = []
+				    			for (var k = 1; k <=5; k++) {
+				    				var number = getRandomInt( min, max );
+				    				row.push(number)
+				    			};
+				    			card.push(row)
+				    			min += max;
+				    			max += max;
+
+				    		};
+				    		cards.push()
+				    	};
+
 		        	default:
 		        }
 		        // Write the data back to the socket, the client will receive it as data from the server
@@ -47,10 +75,13 @@ var json = {
 		'ip': global.ip,
 		'sala': global.infoJuego.nombrePartida,
 		'maxPersonas': global.infoJuego.maximoDePersonas,
-		'maxCartones': global.infoJuego.maximoDeCartones
+		'maxCartones': global.infoJuego.maximoDeCartones,
 	},
 };
 setInterval(function(){
-	network.serverUDP(json, port);		
-},5000)
+	network.serverUDP(json, port);	
+},1000)
+
+
+
 
