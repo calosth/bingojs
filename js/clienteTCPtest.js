@@ -1,5 +1,4 @@
 
-
 var dgram = require('dgram');
 var network = {
 
@@ -112,12 +111,16 @@ function tcp(ip, port){
 		var net = network.net
 		var HOST = ip;
 		var PORT = port;
+		var quantity = 1;
+
 
 		// Create a server instance, and chain the listen function to it
 		// The function passed to net.createServer() becomes the event handler for the 'connection' event
 		// The sock object the callback function receives UNIQUE for each connection
 		net.createServer(function(sock) {
 		    
+			var numbers = [];
+
 		    // We have a connection - a socket object is assigned to the connection automatically
 		    console.log('CONNECTED: ' + sock.remoteAddress +':'+ sock.remotePort);
 		    
@@ -127,6 +130,7 @@ function tcp(ip, port){
 		        console.log('DATA ' + sock.remoteAddress + ': ' + data);
 		        var message = JSON.parse(data)
 		        switch(message.code){
+
 		        	case '100':
 		        		var json = {
 		        			'code': '101',
@@ -148,17 +152,12 @@ function tcp(ip, port){
 				    			},
 				    			{
 				    				'IDCarton':'87545',
-				    				'Numeros': [[1,2,3,4,5],[6,7,8,9,1],[1,2,null,4,4],[5,2,4,1,4],[6,3,5,2,1]]
+				    				'Numeros': [[14,12,5,6,3],[28,27,29,17,21],[40,41,null,44,36],[53,50,49,56,60],[61,69,71,65,70]]
 				    			},
 				    			{
 				    				'IDCarton':'1241',
-				    				'Numeros': [[1,2,3,4,5],[6,7,8,9,1],[1,2,null,4,4],[5,2,4,1,4],[6,3,5,2,1]]
-				    			},
-				    			{
-				    				'IDCarton':'sgdff',
-				    				'Numeros': [[1,2,3,4,5],[6,7,8,9,1],[1,2,null,4,4],[5,2,4,1,4],[6,3,5,2,1]]
+				    				'Numeros': [[1,6,11,15,20],[30,16,20,28,19],[45,32,null,40,33],[48,59,54,52,47],[72,66,62,68,61]]
 				    			}
-
 				    		]
 				    	};
 
@@ -171,6 +170,23 @@ function tcp(ip, port){
 		        // Write the data back to the socket, the client will receive it as data from the server
 		        
 		    });
+
+			setInterval(function(){
+
+				json = {
+					'code':'308',
+					'NroJugada':quantity,
+					'Numero':Math.floor(Math.random()*75+1),
+					'IDJuego':'4'
+				};
+
+				quantity = quantity + 1;
+
+				sock.write(JSON.stringify(json));
+				console.log("Numero:"+json.Numero);
+
+				// network.serverUDP(json, port);		
+			},3000)
 		    
 		    // Add a 'close' event handler to this instance of socket
 		    sock.on('close', function(data) {

@@ -1,5 +1,11 @@
-_.templateSettings.variable = 'board';
-var quantity = '';
+//Cantidad de cartones que el cliente quiere
+var boardNumber = '';
+
+//Objeto que contiene a los templates
+var templates = {
+	'board': _.template( $('script.templateBoard').html() ),
+	'number':  _.template( $('script.Numbers').html() )
+};
 
 var conexion = function(ip, port){
 
@@ -14,7 +20,7 @@ var conexion = function(ip, port){
 		//Apenas se conecte solicitará la cantidad de cartones
 		json = {
 			'code':'102',
-			'NroCartones':quantity
+			'NroCartones':boardNumber
 		};
 
 		message = JSON.stringify(json);
@@ -32,12 +38,18 @@ var conexion = function(ip, port){
 			//Cuando recibe los cartones
 			case '103':
 
-				for(i in message.cartones){
-					var template = _.template( $('script.template').html() );
-					$('#boards-content').before( template( message.cartones[i] ) );					
-				}		
+				for(i in message.cartones)
+					$('#boards-content').append(templates.board(message.cartones[i]));
 				
 				break;
+
+			//Cuando el servidor canta un número
+			case '308':
+
+				$('ul.nav.nav-pills').append(templates.number(message));
+				$("."+message.Numero).addClass("info");
+
+				break
 
 			default:
 
@@ -50,7 +62,7 @@ var conexion = function(ip, port){
 $('#aceptarNumero').on('click',function(){
 
 	if(!($('#numero').val() == '')){
-		quantity = $('#numero').val();
+		boardNumber = $('#numero').val();
 		conexion('127.0.0.1', 10022);
 	}
 	else{
