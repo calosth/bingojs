@@ -43,7 +43,7 @@ function tcp(ip, port){
 				    			var row = []
 				    			min = max + 1
 				    			max = 15 * j
-				    			count = 0
+				    			var count = 0
 				    			while(count < 5) {
 				    				var number = getRandomInt(min, max);
 				    				if( !(_.contains(row,number)) ){

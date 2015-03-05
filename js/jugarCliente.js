@@ -17,6 +17,8 @@ var conexion = function(ip, port){
 
 	client.connect(PORT, HOST, function(){
 
+		multicast('230.185.192.108');
+
 		//Apenas se conecte solicitará la cantidad de cartones
 		json = {
 			'code':'102',
@@ -59,11 +61,31 @@ var conexion = function(ip, port){
 
 };
 
+var multicast = function(ip){
+
+	// var HOST = ifaces.en1[1].address;
+
+	network.udp.on('listening',function(){
+		network.udp.setBroadcast(true);
+		network.udp.setMulticastTTL(128);
+		network.udp.addMembership(ip);
+	});
+
+	network.udp.on('message',function(message,remote){
+		var y = JSON.parse(message);
+
+		console.log(y);
+	});
+
+	network.udp.bind(41234);
+
+};
+
 $('#aceptarNumero').on('click',function(){
 
 	if(!($('#numero').val() == '')){
 		boardNumber = $('#numero').val();
-		conexion('127.0.0.1', 10022);
+		conexion(global.IPserver, 10022);
 	}
 	else{
 		$('#numero').parent().addClass("has-error");

@@ -176,11 +176,15 @@ function tcp(ip, port){
 	    		    		for (var j = 1; j <= 5; j++) {
 	    		    			var row = []
 	    		    			min = max + 1
-	    		    			max = 15 * j
-	    		    			for (var k = 1; k <=5; k++) {
-	    		    				var number = getRandomInt(min, max);
-	    		    				row.push(number)
-	    		    			};
+	    		    			max = 15 * j;
+	    		    			var count = 0
+    			    			while(count < 5) {
+    			    				var number = getRandomInt(min, max);
+    			    				if( !(_.contains(row,number)) ){
+    				    				row.push(number);
+    				    				count += 1;
+    			    				};
+    			    			};
 	    		    			card.push(row)
 	    		    			if (j == 3){
 	    		    				row[2] = null
