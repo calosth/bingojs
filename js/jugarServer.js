@@ -36,21 +36,30 @@ function tcp(ip, port){
 				    	var countCard = message.NroCartones;
 				    	var cards = [];
 				    	for (var i = 0; i < countCard; i++) {				    		
-			    			var min = 1, max = 15;
 			    			var card = []
-				    		for (var j = 0; j < 5; j++) {
+			    			var min, max = 0;
+				    		for (var j = 1; j <= 5; j++) {
 				    			var row = []
+				    			min = max + 1
+				    			max = 15 * j
 				    			for (var k = 1; k <=5; k++) {
-				    				var number = getRandomInt( min, max );
+				    				var number = getRandomInt(min, max);
 				    				row.push(number)
 				    			};
 				    			card.push(row)
-				    			min += max;
-				    			max += max;
-
+				    			if (j == 3){
+				    				row[2] = null
+				    			}
+				    			console.log(row)
 				    		};
-				    		cards.push()
+				    		cards.push(card)
 				    	};
+				    	var json = {
+				    		'code':'103',
+				    		'cartones': cards
+				    	};			
+
+				    	console.log(json.cartones)	    	
 
 		        	default:
 		        }
