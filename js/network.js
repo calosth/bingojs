@@ -25,7 +25,7 @@ var network = {
 		client.bind(port);
 	},
 
-	serverUDP: function(json, port){
+	serverUDP: function(json, port,	host){
 		var dgram = require('dgram');
 		var server = dgram.createSocket('udp4');
 
