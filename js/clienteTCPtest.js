@@ -142,24 +142,50 @@ function tcp(ip, port){
 
 				    case '102':
 				    	
-				    	var json = {
-				    		'code':'103',
-				    		'cartones': [
+				    	// var json = {
+				    	// 	'code':'103',
+				    	// 	'cartones': [
 
-				    			{
-				    				'IDCarton':'dsd',
-				    				'Numeros': [[13,7,9,5,3],[21,19,29,17,16],[45,40,null,33,34],[54,47,48,59,56],[65,64,68,67,74]]
-				    			},
-				    			{
-				    				'IDCarton':'87545',
-				    				'Numeros': [[14,12,5,6,3],[28,27,29,17,21],[40,41,null,44,36],[53,50,49,56,60],[61,69,71,65,70]]
-				    			},
-				    			{
-				    				'IDCarton':'1241',
-				    				'Numeros': [[1,6,11,15,20],[30,16,20,28,19],[45,32,null,40,33],[48,59,54,52,47],[72,66,62,68,61]]
-				    			}
-				    		]
-				    	};
+				    	// 		{
+				    	// 			'IDCarton':'dsd',
+				    	// 			'Numeros': [[13,7,9,5,3],[21,19,29,17,16],[45,40,null,33,34],[54,47,48,59,56],[65,64,68,67,74]]
+				    	// 		},
+				    	// 		{
+				    	// 			'IDCarton':'87545',
+				    	// 			'Numeros': [[14,12,5,6,3],[28,27,29,17,21],[40,41,null,44,36],[53,50,49,56,60],[61,69,71,65,70]]
+				    	// 		},
+				    	// 		{
+				    	// 			'IDCarton':'1241',
+				    	// 			'Numeros': [[1,6,11,15,20],[30,16,20,28,19],[45,32,null,40,33],[48,59,54,52,47],[72,66,62,68,61]]
+				    	// 		}
+				    	// 	]
+				    	// };
+
+    		    	var countCard = message.NroCartones;
+    		    	var cards = [];
+    		    	for (var i = 0; i < countCard; i++) {				    		
+    	    			var card = []
+    	    			var min, max = 0;
+    		    		for (var j = 1; j <= 5; j++) {
+    		    			var row = []
+    		    			min = max + 1
+    		    			max = 15 * j
+    		    			for (var k = 1; k <=5; k++) {
+    		    				var number = getRandomInt(min, max);
+    		    				row.push(number)
+    		    			};
+    		    			card.push(row)
+    		    			if (j == 3){
+    		    				row[2] = null
+    		    			}
+    		    			console.log(row)
+    		    		};
+    		    		cards.push(card)
+    		    	};
+    		    	var json = {
+    		    		'code':'103',
+    		    		'cartones': cards
+    		    	};
 
 				    	sock.write(JSON.stringify(json));
 

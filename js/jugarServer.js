@@ -32,6 +32,7 @@ function tcp(ip, port){
 		        		};
 		        		// var message = new Buffer(json);
 				        sock.write(JSON.stringify(json));
+				        break;
 				    case '102':
 				    	var countCard = message.NroCartones;
 				    	var cards = [];
@@ -60,7 +61,7 @@ function tcp(ip, port){
 				    	};			
 
 				    	console.log(json.cartones)	    	
-
+				    	break;
 		        	default:
 		        }
 		        // Write the data back to the socket, the client will receive it as data from the server
