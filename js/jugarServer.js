@@ -53,7 +53,10 @@ function tcp(ip, port){
 				    			}
 				    			console.log(row)
 				    		};
-				    		cards.push(card)
+				    		cards.push({
+				    			'IDCarton': i,
+			    				'Numeros': card,
+				    		})
 				    	};
 				    	var json = {
 				    		'code':'103',
