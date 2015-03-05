@@ -43,15 +43,19 @@ function tcp(ip, port){
 				    			var row = []
 				    			min = max + 1
 				    			max = 15 * j
-				    			for (var k = 1; k <=5; k++) {
+				    			count = 0
+				    			while(count < 5) {
 				    				var number = getRandomInt(min, max);
-				    				row.push(number)
+				    				if( !(_.contains(row,number)) ){
+					    				row.push(number);
+					    				count += 1;
+				    				};
 				    			};
 				    			card.push(row)
 				    			if (j == 3){
 				    				row[2] = null
 				    			}
-				    			console.log(row)
+				
 				    		};
 				    		cards.push({
 				    			'IDCarton': i,
