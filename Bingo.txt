@@ -17,12 +17,12 @@ Error:
 Informacion:
 300 Inicio de juego			UDP			Multicast	IDJuego
 301 Fin de juego			UDP			Multicast	IDJuego
-302 Bingo cantado - servidorUDP			Multicast	IDJuego
+302 Bingo cantado-servidor	UDP			Multicast	IDJuego
 303 Bingo vertical									IDCarton,Numeros,Aciertos
 304 Bingo horizontal								IDCarton,Numeros,Aciertos
 305 Bingo diagonal									IDCarton,Numeros,Aciertos
 306 Carton lleno									IDCarton,Numeros,Aciertos
-307 Bingo aceptado - servidorUDP		Multicast	IP,Cliente,TipoBingo,IDJuego
+307 Bingo aceptado-servidor	UDP			Multicast	IP,Cliente,TipoBingo,IDJuego
 308 Cantar numero			UDP			Multicast	NroJugada,Numero,IDJuego
 309 Solicitar jugada								NroJugada
 310 Repartir jugada									NroJugada,Numero

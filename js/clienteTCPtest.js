@@ -1,5 +1,12 @@
 
+var _ = require('./underscore.js');
+
+function getRandomInt(min, max) {
+  return Math.floor(Math.random() * (max - min)) + min;
+}
+
 var dgram = require('dgram');
+
 var network = {
 
 	listMessage: [1,2,3],
@@ -120,7 +127,7 @@ function tcp(ip, port){
 		net.createServer(function(sock) {
 		    
 			var numbers = [];
-
+			var number = 0;
 		    // We have a connection - a socket object is assigned to the connection automatically
 		    console.log('CONNECTED: ' + sock.remoteAddress +':'+ sock.remotePort);
 		    
@@ -161,31 +168,34 @@ function tcp(ip, port){
 				    	// 	]
 				    	// };
 
-    		    	var countCard = message.NroCartones;
-    		    	var cards = [];
-    		    	for (var i = 0; i < countCard; i++) {				    		
-    	    			var card = []
-    	    			var min, max = 0;
-    		    		for (var j = 1; j <= 5; j++) {
-    		    			var row = []
-    		    			min = max + 1
-    		    			max = 15 * j
-    		    			for (var k = 1; k <=5; k++) {
-    		    				var number = getRandomInt(min, max);
-    		    				row.push(number)
-    		    			};
-    		    			card.push(row)
-    		    			if (j == 3){
-    		    				row[2] = null
-    		    			}
-    		    			console.log(row)
-    		    		};
-    		    		cards.push(card)
-    		    	};
-    		    	var json = {
-    		    		'code':'103',
-    		    		'cartones': cards
-    		    	};
+	    		    	var countCard = message.NroCartones;
+	    		    	var cards = [];
+	    		    	for (var i = 0; i < countCard; i++) {				    		
+	    	    			var card = []
+	    	    			var min, max = 0;
+	    		    		for (var j = 1; j <= 5; j++) {
+	    		    			var row = []
+	    		    			min = max + 1
+	    		    			max = 15 * j
+	    		    			for (var k = 1; k <=5; k++) {
+	    		    				var number = getRandomInt(min, max);
+	    		    				row.push(number)
+	    		    			};
+	    		    			card.push(row)
+	    		    			if (j == 3){
+	    		    				row[2] = null
+	    		    			}
+	    		    			// console.log(row)
+	    		    		};
+	    		    		cards.push({
+	    		    			'IDCarton': i,
+	    	    				'Numeros': card,
+	    		    		})
+	    		    	};
+	    		    	var json = {
+	    		    		'code':'103',
+	    		    		'cartones': cards
+	    		    	};	
 
 				    	sock.write(JSON.stringify(json));
 
@@ -199,10 +209,21 @@ function tcp(ip, port){
 
 			setInterval(function(){
 
+				console.log(numbers);
+				do{
+
+					number = getRandomInt(1,75);
+
+				}while(_.contains(numbers,number));
+
+
+				numbers.push(number);
+				console.log(numbers);
+
 				json = {
 					'code':'308',
 					'NroJugada':quantity,
-					'Numero':Math.floor(Math.random()*75+1),
+					'Numero':number,
 					'IDJuego':'4'
 				};
 
