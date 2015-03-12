@@ -43,12 +43,55 @@
 		  			
 		</div>		
 	</div>
+
+	<!-- Modal para solicitar el nombre del jugador ON -->
+	<div id="myModal" class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+	  <div class="modal-dialog modal-sm">
+	    <div class="modal-content">
+			<div class="modal-header">
+				<h4>Nombre</h4>
+			</div>
+			<div class="modal-body">
+				<form>
+					<div class="form-group">
+						<label for="numero">Ingresa tu nombre:</label>
+						<input type="text" name="form-control" id="nombre" placeholder="Hugo Chávez">
+					</div>
+				</form>
+			</div>		
+			<div class="modal-footer">
+				<button type="button" id="aceptarNombre" class="btn btn-success" data-dismiss="modal">Aceptar</button>
+			</div>		
+	    </div>
+	  </div>
+	</div>
+	<!-- Modal para solicitar el nombre del jugador OFF -->
+
+	<script type="text/template" class="availableTemplate">
+
+		<div class="col-xs-6 col-md-3">
+			<a href="#" class="thumbnail">
+				<h3><%=sala%></h3>
+				<p>IP: <%=ip%></p>
+				<p>Máximo Cartones: <%=maxCartones%></p>
+				<button type="button" class="btn btn-success btn-sm btn-join" data-ip="<%=ip%>">
+					Unirse
+				</button>
+			</a>
+		</div>
+
+	</script>
 	<script src="../js/jquery.js"></script>
 	<script src="../js/underscore.js"></script>
 	<script src="../js/underscore.observable.js"></script>
 	<script src="../js/jquery.js"></script>
 	<script src="../js/network.js"></script>
 	<script src="../js/unirse.js"></script>
+	<script src="../js/bootstrap.min.js"></script>
+	<script>			
+		$('#myModal').modal('show');
+		$('#nombre').focus();
+	</script>
 
 </body>
 </html>

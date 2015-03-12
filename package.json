@@ -5,12 +5,12 @@
     "title": "BingoProtocol",
     // "frame": false,
     // "toolbar": false,
-    "width": 1000,
+    "width": 1200,
     "height": 600,
     "min_width": 800,
     "min_height": 600,
-    "max_width": 1000,
-    "max_height": 600,
+    "max_width": 1400,
+    "max_height": 1000,
     "position": "center"  
   },
   "dependencies": {

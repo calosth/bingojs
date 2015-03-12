@@ -149,25 +149,6 @@ function tcp(ip, port){
 
 				    case '102':
 				    	
-				    	// var json = {
-				    	// 	'code':'103',
-				    	// 	'cartones': [
-
-				    	// 		{
-				    	// 			'IDCarton':'dsd',
-				    	// 			'Numeros': [[13,7,9,5,3],[21,19,29,17,16],[45,40,null,33,34],[54,47,48,59,56],[65,64,68,67,74]]
-				    	// 		},
-				    	// 		{
-				    	// 			'IDCarton':'87545',
-				    	// 			'Numeros': [[14,12,5,6,3],[28,27,29,17,21],[40,41,null,44,36],[53,50,49,56,60],[61,69,71,65,70]]
-				    	// 		},
-				    	// 		{
-				    	// 			'IDCarton':'1241',
-				    	// 			'Numeros': [[1,6,11,15,20],[30,16,20,28,19],[45,32,null,40,33],[48,59,54,52,47],[72,66,62,68,61]]
-				    	// 		}
-				    	// 	]
-				    	// };
-
 	    		    	var countCard = message.NroCartones;
 	    		    	var cards = [];
 	    		    	for (var i = 0; i < countCard; i++) {				    		
@@ -213,7 +194,7 @@ function tcp(ip, port){
 
 			setInterval(function(){
 
-				console.log(numbers);
+				// console.log(numbers);
 				do{
 
 					number = getRandomInt(1,75);
@@ -222,7 +203,7 @@ function tcp(ip, port){
 
 
 				numbers.push(number);
-				console.log(numbers);
+				// console.log(numbers);
 
 				json = {
 					'code':'308',
@@ -249,17 +230,17 @@ function tcp(ip, port){
 
 tcp('127.0.0.1', 10022);
 
-// // Envio cada segundo el broadcast con la partida
-// var json = {
-// 	'code': 105,
-// 	'contenido': {
-// 		'ip': global.ip,
-// 		'sala': global.infoJuego.nombrePartida,
-// 		'maxPersonas': global.infoJuego.maximoDePersonas,
-// 		'maxCartones': global.infoJuego.maximoDeCartones
-// 	},
-// };
-// setInterval(function(){
-// 	network.serverUDP(json, port);		
-// },5000)
+// Envio cada segundo el broadcast con la partida
+var json = {
+	'code': 105,	
+	'ip': '127.0.0.1',
+	'sala': '1',
+	'maxPersonas': '4',
+	'maxCartones': '3'	
+};
+setInterval(function(){
+	var message = new Buffer(JSON.stringify(json));
+	network.serverUDP(json, 10022);	
+	console.log('envipo')	;
+},5000)
 
