@@ -17,7 +17,7 @@ var conexion = function(ip, port){
 
 	client.connect(PORT, HOST, function(){
 
-		multicast('230.185.192.108');
+		multicast('239.1.2.3');
 
 		//Apenas se conecte solicitará la cantidad de cartones
 		json = {
@@ -65,19 +65,39 @@ var multicast = function(ip){
 
 	// var HOST = ifaces.en1[1].address;
 
-	network.udp.on('listening',function(){
-		network.udp.setBroadcast(true);
-		network.udp.setMulticastTTL(128);
-		network.udp.addMembership(ip);
+	var dgram = require('dgram');
+	var socket = dgram.createSocket('udp4');
+	 
+	// var multicastAddress = '239.1.2.3';
+	var multicastPort = 5554;
+	 
+	// socket.addMembership(multicastAddress);
+	socket.bind(multicastPort, '0.0.0.0',function(){
+		
+		socket.setBroadcast(true);
+		socket.setMulticastTTL(1);
+		socket.addMembership(ip);
+
 	});
+	 
+	socket.on("message", function ( data, rinfo ) {
+		var message = JSON.parse(data);
+		console.log(message);
 
-	network.udp.on('message',function(message,remote){
-		var y = JSON.parse(message);
+		switch(message.code){
 
-		console.log(y);
+			//Cuando el servidor canta un número
+			case '308':
+
+				$('ul.nav.nav-pills').append(templates.number(message));
+				$("."+message.Numero).addClass("info");
+
+				break;
+
+			default:
+
+		}
 	});
-
-	network.udp.bind(41234);
 
 };
 

@@ -54,6 +54,8 @@ network.udp.on('message',function(message,remote){
 
 	mensaje = JSON.parse(message);
 
+	console.log(mensaje);
+
 	if( mensaje.code == '105' ){
 
 		if( ! (_.contains(IPes,mensaje.ip)) ){
@@ -71,6 +73,32 @@ network.udp.on('message',function(message,remote){
 	}
 
 });
+
+var multicast = function(ip){
+
+	// var HOST = ifaces.en1[1].address;
+	var dgram = require('dgram');
+	var client = dgram.createSocket('udp4');
+
+	console.log('multicast');
+
+	client.on('listening',function(){
+		// client.setBroadcast(true);
+		// client.setMulticastTTL(128);
+		client.addMembership(ip,'192.168.0.104');
+	});
+
+	client.on('message',function(message,remote){
+		var y = JSON.parse(message);
+
+		console.log(y);
+	});
+
+	// client.bind(10022,ip);
+
+};
+
+multicast('230.185.192.108');
 
 $('#aceptarNombre').on('click',function(){
 
