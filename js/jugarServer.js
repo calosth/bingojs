@@ -3,7 +3,7 @@ function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min)) + min;
 }
 
-var port = 41234;
+var port = 10022;
 
 
 function tcp(ip, port){
