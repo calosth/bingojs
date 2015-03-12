@@ -86,48 +86,51 @@ function tcp(ip, port){
 tcp(global.ip, 10022);
 
 
-// Envio de cartones
-var quantity = 1
-setInterval(function(){
-	json = {
-		'code':'308',
-		'NroJugada':quantity,
-		'Numero':Math.floor(Math.random()*75+1),
-		'IDJuego':'4',
-	};
-	quantity = quantity + 1;
+// Empezar Envio de cartones
+$("#btn-empezar").on("click",function(){
+	
+	var dgram = require('dgram');
+	var server = dgram.createSocket('udp4');	 
+	var multicastAddress = '239.1.2.3';
+	var multicastPort = 5554;
+	var quantity = 1;
 
-	var dgram = require('dgram'); 
-	var server = dgram.createSocket("udp4"); 
-	server.bind(function(){
-		server.setBroadcast(true);
+	server.bind(multicastPort, '0.0.0.0',function(){
+		server.addMembership(multicastAddress);
 		server.setMulticastTTL(128);
-		server.addMembership('230.185.192.108','192.168.0.109'); 
-		
+		server.setBroadcast(true);
 	});
 
-    var message = new Buffer("JSON.stringify(json)");
-    server.send(message, 0, message.length, port, "230.185.192.108");
-    console.log("Sent " + message + " to the wire...");
-    server.close();
+	setInterval(function(){
+		json = {
+			'code':'308',
+			'NroJugada':quantity,
+			'Numero':Math.floor(Math.random()*75+1),
+			'IDJuego':'4',									// <<<-----------
+		};
 
+		quantity = quantity + 1;
 
-},3000)
+	    var message = new Buffer(JSON.stringify(json));
+	    server.send(message, 0, message.length, multicastPort, multicastAddress, function(err){
+	    	if (err) console.log(err);
+		    console.log("Sent " + message + " to the wire...");
+	    });
 
+	},3000);
+});
 
 // Envio cada segundo el broadcast con la partida
 var json1 = {
 	'code': 105,
-	'contenido': {
-		'ip': global.ip,
-		'sala': global.infoJuego.nombrePartida,
-		'maxPersonas': global.infoJuego.maximoDePersonas,
-		'maxCartones': global.infoJuego.maximoDeCartones,
-	},
+	'ip': global.ip,
+	'sala': global.infoJuego.nombrePartida,
+	'maxPersonas': global.infoJuego.maximoDePersonas,
+	'maxCartones': global.infoJuego.maximoDeCartones,
 };
 setInterval(function(){
 	network.serverUDP(json1, port, '255.255.255.255');		
-},1000)
+},1000);
 
 
 

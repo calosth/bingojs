@@ -27,12 +27,11 @@ $("#submit").on('click',function(){
 
 	var json = {
 		'code': 105,
-		'contenido': {
-			'ip': ifaces.en1[1].address,
-			'sala': infoJuego.nombrePartida,
-			'maxPersonas': infoJuego.maximoDePersonas,
-			'maxCartones': infoJuego.maximoDeCartones
-		},
+		'ip': global.ip,
+		'sala': global.infoJuego.nombrePartida,
+		'maxPersonas': global.infoJuego.maximoDePersonas,
+		'maxCartones': global.infoJuego.maximoDeCartones,
+
 	};
 
 	console.log(json)
