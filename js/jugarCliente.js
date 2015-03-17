@@ -21,13 +21,11 @@ var conexion = function(ip, port){
 
 		//Apenas se conecte solicitará la cantidad de cartones
 		json = {
-			'code':'102',
+			'Codigo':'102',
 			'NroCartones':boardNumber
 		};
 
-		message = JSON.stringify(json);
-
-		client.write(message);
+		client.write(JSON.stringify(json));
 
 	});
 
@@ -35,7 +33,7 @@ var conexion = function(ip, port){
 
 		var message = JSON.parse(data);
 		
-		switch(message.code){
+		switch(message.Codigo){
 
 			//Cuando recibe los cartones
 			case '103':
@@ -43,15 +41,7 @@ var conexion = function(ip, port){
 				for(i in message.cartones)
 					$('#boards-content').append(templates.board(message.cartones[i]));
 				
-				break;
-
-			//Cuando el servidor canta un número
-			case '308':
-
-				$('ul.nav.nav-pills').append(templates.number(message));
-				$("."+message.Numero).addClass("info");
-
-				break
+				break;			
 
 			default:
 
@@ -63,12 +53,8 @@ var conexion = function(ip, port){
 
 var multicast = function(ip){
 
-	// var HOST = ifaces.en1[1].address;
-
 	var dgram = require('dgram');
 	var socket = dgram.createSocket('udp4');
-	 
-	// var multicastAddress = '239.1.2.3';
 	var multicastPort = 5554;
 	 
 	// socket.addMembership(multicastAddress);
@@ -81,10 +67,33 @@ var multicast = function(ip){
 	});
 	 
 	socket.on("message", function ( data, rinfo ) {
-		var message = JSON.parse(data);
-		console.log(message);
 
-		switch(message.code){
+		var message = JSON.parse(data);
+
+		switch(message.Codigo){
+
+			//Cuando el servidor indique que se comenzó a jugar
+			case '300':
+
+				$('modalComenzamos').modal('show').on('shown',function(){
+					window.setTimeout(function(){
+						$('modalComenzamos').modal('hide');
+					}, 1500);
+				});
+
+				break;
+
+			case '301':
+
+				$('modalTermino').modal('show').on('shown',function(){
+					window.setTimeout(function(){
+						$('modalTermino').modal('hide');
+					}, 1500);
+				});
+
+				window.location.href = 'index.html';
+
+				break;
 
 			//Cuando el servidor canta un número
 			case '308':

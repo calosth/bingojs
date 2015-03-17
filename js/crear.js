@@ -26,7 +26,7 @@ $("#submit").on('click',function(){
 	global.infoJuego = infoJuego
 
 	var json = {
-		'code': 105,
+		'Codigo': 105,
 		'ip': global.ip,
 		'sala': global.infoJuego.nombrePartida,
 		'maxPersonas': global.infoJuego.maximoDePersonas,

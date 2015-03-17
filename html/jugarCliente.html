@@ -51,6 +51,29 @@
 		</div>
 		<!-- Modal para solicitar la cantidad de cartones OFF -->
 
+		<!-- Modal que indica que comenzamos la partida ON -->
+		<div id="modalComenzamos" class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+		  <div class="modal-dialog modal-sm">
+		    <div class="modal-content">
+				<div class="modal-header">
+					<h4>Comenzamos!</h4>
+				</div>			
+		    </div>
+		  </div>
+		</div>
+		<!-- Modal que indica que comenzamos la partida OFF -->
+		<!-- Modal que indica que comenzamos la partida ON -->
+		<div id="modalTermino" class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+		  <div class="modal-dialog modal-sm">
+		    <div class="modal-content">
+				<div class="modal-header">
+					<h4>Se ha terminado la partida</h4>
+				</div>			
+		    </div>
+		  </div>
+		</div>
+		<!-- Modal que indica que comenzamos la partida OFF -->
+
 		<!-- aquí se colocarán los cartones que envíe el servidor -->
 		<div class="row" id="boards-content"></div>	
 
@@ -67,7 +90,7 @@
 			</div>
 		</div>
 
-		<!-- Numero jugados OFF -->
+		<!-- Templates ON -->
 		<script type="text/template" class="templateBoard">
 			<div class="col-xs-6 col-md-4 well alert-success">		  	
 			<table class="table table-bordered text-center white">
@@ -99,11 +122,12 @@
 			</table>
 		  </div>	
 		</script>
-		<script type="text/template" class="Numbers">
 
+		<script type="text/template" class="Numbers">
 			<li><span class="badge"><%= Numero %></span></li>
-			
 		</script>
+		<!-- Templates OFF -->
+
 		<script src="../js/jquery.js"></script>
 		<script src="../js/underscore.js"></script>
 		<script src="../js/bootstrap.min.js"></script>
@@ -113,8 +137,6 @@
 			$('#myModal').modal('show');
 			$('#numero').focus();
 		</script>
-
-		<!-- Template que se renderizará con los números del cartón del bingo -->
 
 </body>
 </html>

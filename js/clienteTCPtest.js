@@ -136,11 +136,11 @@ function tcp(ip, port){
 		        
 		        console.log('DATA ' + sock.remoteAddress + ': ' + data);
 		        var message = JSON.parse(data)
-		        switch(message.code){
+		        switch(message.Codigo){
 
 		        	case '100':
 		        		var json = {
-		        			'code': '101',
+		        			'Codigo': '101',
 		        			'IDJuego': '231',
 		        		};
 		        		// var message = new Buffer(json);
@@ -178,7 +178,7 @@ function tcp(ip, port){
 	    		    		})
 	    		    	};
 	    		    	var json = {
-	    		    		'code':'103',
+	    		    		'Codigo':'103',
 	    		    		'cartones': cards
 	    		    	};	
 
@@ -206,7 +206,7 @@ function tcp(ip, port){
 				// console.log(numbers);
 
 				json = {
-					'code':'308',
+					'Codigo':'308',
 					'NroJugada':quantity,
 					'Numero':number,
 					'IDJuego':'4'
@@ -232,7 +232,7 @@ tcp('127.0.0.1', 10022);
 
 // Envio cada segundo el broadcast con la partida
 var json = {
-	'code': 105,	
+	'Codigo': 105,	
 	'ip': '127.0.0.1',
 	'sala': '1',
 	'maxPersonas': '4',

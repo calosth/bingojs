@@ -17,7 +17,7 @@ var conexionInicio = function(ip, port){
 
 	var json = {
 
-		'code':'100',
+		'Codigo':'100',
 		'ip':ip,
 		'cliente':playerName,
 
@@ -39,7 +39,7 @@ var conexionInicio = function(ip, port){
 		var mensaje = JSON.parse(data);
 		console.log(mensaje);
 
-		if(mensaje.code == '101'){
+		if(mensaje.Codigo == '101'){
 
 			// client.destroy();
 			window.location.href = "jugarCliente.html";
@@ -56,7 +56,7 @@ network.udp.on('message',function(message,remote){
 
 	console.log(mensaje);
 
-	if( mensaje.code == '105' ){
+	if( mensaje.Codigo == '105' ){
 
 		if( ! (_.contains(IPes,mensaje.ip)) ){
 
@@ -74,31 +74,6 @@ network.udp.on('message',function(message,remote){
 
 });
 
-var multicast = function(ip){
-
-	// var HOST = ifaces.en1[1].address;
-	var dgram = require('dgram');
-	var client = dgram.createSocket('udp4');
-
-	console.log('multicast');
-
-	client.on('listening',function(){
-		// client.setBroadcast(true);
-		// client.setMulticastTTL(128);
-		client.addMembership(ip,'192.168.0.104');
-	});
-
-	client.on('message',function(message,remote){
-		var y = JSON.parse(message);
-
-		console.log(y);
-	});
-
-	// client.bind(10022,ip);
-
-};
-
-multicast('230.185.192.108');
 
 $('#aceptarNombre').on('click',function(){
 
