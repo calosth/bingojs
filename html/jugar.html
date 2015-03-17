@@ -34,110 +34,7 @@
 				<h2>Bingo</h2>
 			</div>
 		</div>
-		<div class="row">
-			
-		  <div class="col-xs-6 col-md-4 well alert-success">		  	
-			<table class="table table-bordered text-center white">
-				<thead>
-					<th colspan="5" class="warning text-center">Cartón 1</th>
-				</thead>
-				<tr>
-					<td class="danger">B</td>
-					<td class="danger">I</td>
-					<td class="danger">N</td>
-					<td class="danger">G</td>
-					<td class="danger">O</td>
-				</tr>
-				<tr>
-					<td>12</td>
-					<td>18</td>
-					<td>41</td>
-					<td>47</td>
-					<td>61</td>
-				</tr>
-				<tr>
-					<td>7</td>
-					<td>26</td>
-					<td>31</td>
-					<td>54</td>
-					<td>70</td>
-				</tr>
-				<tr>
-					<td>4</td>
-					<td>27</td>
-					<td class="success"><h5>Free</h5></td>
-					<td>49</td>
-					<td>63</td>
-				</tr>
-				<tr>
-					<td>5</td>
-					<td>23</td>
-					<td>35</td>
-					<td>58</td>
-					<td>73</td>
-				</tr>
-				<tr>
-					<td>3</td>
-					<td>30</td>
-					<td>32</td>
-					<td>52</td>
-					<td>75</td>
-				</tr>
-			</table>
-		  </div>	
-
-		  <div class="col-xs-6 col-md-4 well alert-success">		  	
-			<table class="table table-bordered text-center white">
-				<thead>
-					<th colspan="5" class="warning text-center">Cartón 1</th>
-				</thead>
-				<tr>
-					<td class="danger">B</td>
-					<td class="danger">I</td>
-					<td class="danger">N</td>
-					<td class="danger">G</td>
-					<td class="danger">O</td>
-				</tr>
-				<tr>
-					<td>12</td>
-					<td>18</td>
-					<td>41</td>
-					<td>47</td>
-					<td>61</td>
-				</tr>
-				<tr>
-					<td>7</td>
-					<td>26</td>
-					<td>31</td>
-					<td>54</td>
-					<td>70</td>
-				</tr>
-				<tr>
-					<td>4</td>
-					<td>27</td>
-					<td class="success"><h5>Free</h5></td>
-					<td>49</td>
-					<td>63</td>
-				</tr>
-				<tr>
-					<td>5</td>
-					<td>23</td>
-					<td>35</td>
-					<td>58</td>
-					<td>73</td>
-				</tr>
-				<tr>
-					<td>3</td>
-					<td>30</td>
-					<td>32</td>
-					<td>52</td>
-					<td>75</td>
-				</tr>
-			</table>
-		  </div>	
-
-		</div>	
-		<div id="jaj"></div>
+		<div class=""></div>
 <!-- Numero jugados ON -->
 		<div class="row">
 			<div class="text-center lead">
@@ -145,16 +42,19 @@
 			</div>
 			<div class="col-md-10 col-md-offset-1 alert alert-dismissable alert-warning">
 				<ul class="nav nav-pills">
-					<li><span class="badge">12</span></li>
-					<li><span class="badge">3</span></li>
-					<li><span class="badge">75</span></li>
-					<li><span class="badge">27</span></li>
-					<li><span class="badge">4</span></li>
-					<li><span class="badge">31</span></li>
+					<script type="text/template" class="Numbers">
+
+						<li><span class="badge"><%= Numero %></span></li>
+						
+					</script>			
 				</ul>
 			</div>
 		</div>
 <!-- Numero jugados OFF -->
+	<div>
+		<a id="btn-FinalizarPartida" href="#" class="btn btn-success">Finalizar Partida</a>
+	</div>
+
 	</div>
 <script>
 
@@ -164,5 +64,6 @@
 	<script src="../js/underscore.js"></script>
 	<script src="../js/network.js"></script>
 	<script src="../js/jugarServer.js"></script>
+
 </body>
 </html>
