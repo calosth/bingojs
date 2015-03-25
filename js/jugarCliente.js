@@ -179,12 +179,14 @@ var verificarCarton = function( clienteTCP, arregloObjCartones ){
 		matrizBinaria = matrizReferencia[i];
 		console.log('-------');
 		console.log( arregloObjCartones[i] );
-		objBingoCompleto = bingoCompleto(matrizBinaria, i);
 
-		if( objBingoCompleto.verificacion ){
+		/// Se envia la matriz binaria que corresponde para verificar
+		objBingoCompleto = bingoCompleto(matrizBinaria, i); 
 
-			console.log( arregloCartones[i] );
+		//Si esta completo el carton
+		if( objBingoCompleto.verificacion ){ 
 
+			//Armo el objeto JSON
 			json = {
 
 				'COD':306,
@@ -192,9 +194,10 @@ var verificarCarton = function( clienteTCP, arregloObjCartones ){
 				'NUMEROS':arregloObjCartones[i].NUMEROS,
 				'ACIERTOS':objBingoCompleto.arrayAciertos
 
-			};
+			}; 
 
-			clienteTCP.write( JSON.stringify( json ) );
+			//Envio el JSON
+			clienteTCP.write( JSON.stringify( json ) ); 
 
 		}
 
@@ -204,17 +207,23 @@ var verificarCarton = function( clienteTCP, arregloObjCartones ){
 
 var bingoCompleto = function( matrizBinaria, numeroCarton ){
 
-	var verificacion = 1;
-	var objetoVerificacion = {};
-	var arrayAciertos = [];
+	//Si esta lleno
+	var verificacion = 1; 
+	//Objeto que retornará con los datos del carton
+	var objetoVerificacion = {}; 
+	//Array que estará en el objeto para retornar
+	var arrayAciertos = []; 
 
+	//Verifica si la matriz binaria esta llena de 1
 	for( i in matrizBinaria )
 		verificacion = verificacion && !( _.contains( matrizBinaria[i], 0 ) );
 
-	if(verificacion)
+	// Si esta llena
+	if(verificacion) 
 		for( i in matrizBinaria )
 			for(j in matrizBinaria[i])
 				arrayAciertos.push(arregloCartones[numeroCarton].NUMEROS[i][j]);
+				//Recorre todo el carton para agregar en un arreglo los aciertos (todos)
 
 	objetoVerificacion = {
 
@@ -222,8 +231,9 @@ var bingoCompleto = function( matrizBinaria, numeroCarton ){
 		'arrayAciertos': arrayAciertos
 
 	};
-
-	return objetoVerificacion;
+	
+	//retorna el objeto 
+	return objetoVerificacion; 
 
 };
 
