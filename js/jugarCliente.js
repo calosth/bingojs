@@ -1,8 +1,5 @@
 //Cantidad de cartones que el cliente quiere
 var boardNumber = '';
-var message;
-
-
 var arregloCartones = []; // Arreglo de objetos que permite manejar los cartones del usuario
 var matrizReferencia = []; // Matrices que ayudan a verificar los aciertos
 
@@ -23,27 +20,25 @@ var conexion = function(ip, port){
 	var PORT = port;
 	var carton;
 	var client = new net.Socket();
-
+	var message;
 
 	client.connect(PORT, HOST, function(){
 
-		var zeros = [[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0]];
 		
-		multicast('239.1.2.3');
 
 		//Apenas se conecte solicitará la cantidad de cartones
 		json = {
-			'COD':'102',
+			'COD':102,
 			'NROCARTONES':boardNumber
 		};
 
 		client.write(JSON.stringify(json));
 
 		for( var i = 0; i < boardNumber; i++ )
-			matrizReferencia.push( zeros );
+			matrizReferencia.push( [[0,0,0,0,0],[0,0,0,0,0],[0,0,1,0,0],[0,0,0,0,0],[0,0,0,0,0]] );
 
-		// console.log( matrizReferencia.length );
 
+		multicast('239.1.2.3', client);
 	});
 
 	client.on('data', function(data){
@@ -54,7 +49,7 @@ var conexion = function(ip, port){
 		switch(message.COD){
 
 			//Cuando recibe los cartones
-			case '103':
+			case 103:
 				carton = message;
 
 				console.log( message );
@@ -74,11 +69,12 @@ var conexion = function(ip, port){
 
 };
 
-var multicast = function(ip){
+var multicast = function(ip, clienteTCP){
 
 	var dgram = require('dgram');
 	var socket = dgram.createSocket('udp4');
 	var multicastPort = 5554;
+	var message;
 	 
 	// socket.addMembership(multicastAddress);
 	socket.bind(multicastPort, '0.0.0.0',function(){
@@ -96,7 +92,7 @@ var multicast = function(ip){
 		switch(message.COD){
 
 			//Cuando el servidor indique que se comenzó a jugar
-			case '300':
+			case 300:
 
 				$('modalComenzamos').modal('show').on('shown',function(){
 					window.setTimeout(function(){
@@ -104,9 +100,12 @@ var multicast = function(ip){
 					}, 1500);
 				});
 
+				// for(i in arregloCartones)
+					console.log( arregloCartones );
+
 				break;
 
-			case '301':
+			case 301:
 
 				$('modalTermino').modal('show').on('shown',function(){
 					window.setTimeout(function(){
@@ -119,7 +118,7 @@ var multicast = function(ip){
 				break;
 
 			//Cuando el servidor canta un número
-			case '308':
+			case 308:
 
 				$('ul.nav.nav-pills').append(templates.number(message));
 				$("."+message.NUMERO).addClass("info");
@@ -127,10 +126,7 @@ var multicast = function(ip){
 				// console.log( arregloCartones );
 
 				verificarNumeroLlegado( parseInt(message.NUMERO,10) );
-
-				// console.log( '-----------' );
-				// for( i in matrizReferencia )
-				// 	console.log( matrizReferencia[i] );
+				verificarCarton( clienteTCP, arregloCartones );
 
 				break;
 
@@ -169,9 +165,75 @@ var verificarNumeroLlegado = function( numeroCantado ){
 		}
 	}
 
-	console.log( '=============' );
-	for (i in matrizReferencia)
-		console.log( matrizReferencia[i] );
+};
+
+var verificarCarton = function( clienteTCP, arregloObjCartones ){
+
+	var matrizBinaria = [];
+	var json = {};
+	var objBingoCompleto = {};
+
+
+	for( var i = 0; i < arregloObjCartones.length; i++ ){
+
+		matrizBinaria = matrizReferencia[i];
+		console.log('-------');
+		console.log( arregloObjCartones[i] );
+
+		/// Se envia la matriz binaria que corresponde para verificar
+		objBingoCompleto = bingoCompleto(matrizBinaria, i); 
+
+		//Si esta completo el carton
+		if( objBingoCompleto.verificacion ){ 
+
+			//Armo el objeto JSON
+			json = {
+
+				'COD':306,
+				'IDCARTON':arregloObjCartones[i].IDCARTON,
+				'NUMEROS':arregloObjCartones[i].NUMEROS,
+				'ACIERTOS':objBingoCompleto.arrayAciertos
+
+			}; 
+
+			//Envio el JSON
+			clienteTCP.write( JSON.stringify( json ) ); 
+
+		}
+
+	}
+
+};
+
+var bingoCompleto = function( matrizBinaria, numeroCarton ){
+
+	//Si esta lleno
+	var verificacion = 1; 
+	//Objeto que retornará con los datos del carton
+	var objetoVerificacion = {}; 
+	//Array que estará en el objeto para retornar
+	var arrayAciertos = []; 
+
+	//Verifica si la matriz binaria esta llena de 1
+	for( i in matrizBinaria )
+		verificacion = verificacion && !( _.contains( matrizBinaria[i], 0 ) );
+
+	// Si esta llena
+	if(verificacion) 
+		for( i in matrizBinaria )
+			for(j in matrizBinaria[i])
+				arrayAciertos.push(arregloCartones[numeroCarton].NUMEROS[i][j]);
+				//Recorre todo el carton para agregar en un arreglo los aciertos (todos)
+
+	objetoVerificacion = {
+
+		'verificacion':verificacion,
+		'arrayAciertos': arrayAciertos
+
+	};
+	
+	//retorna el objeto 
+	return objetoVerificacion; 
 
 };
 
