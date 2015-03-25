@@ -4,7 +4,7 @@ var infoJuego = {}
 
 var os = require('os');
 var ifaces = os.networkInterfaces();
-global.ip = ifaces.en1[1].address
+global.ip = ifaces.en1[1].address;
 // global.ip = "10.0.3.4"
 var port = 41234;
 

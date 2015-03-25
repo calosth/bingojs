@@ -1,6 +1,9 @@
 
 var IPes = [];
 var playerName = '';
+var os = require('os');
+var ifaces = os.networkInterfaces();
+global.myIP = ifaces.en1[1].address;
 
 var templates = {
 
@@ -17,13 +20,12 @@ var conexionInicio = function(ip, port){
 
 	var json = {
 
-		'COD':'100',
-		'IP':ip,
+		'COD':100,
+		'IP':global.myIP,
 		'CLIENTE':playerName,
 
 	};
 
-	console.log(ip);
 	global.IPserver = ip;
 
 	var mensaje = JSON.stringify(json);
@@ -37,9 +39,8 @@ var conexionInicio = function(ip, port){
 	client.on('data', function(data){
 
 		var mensaje = JSON.parse(data);
-		console.log(mensaje);
 
-		if(mensaje.COD == '101'){
+		if(mensaje.COD == 101){
 
 			// client.destroy();
 			window.location.href = "jugarCliente.html";
@@ -54,9 +55,7 @@ network.udp.on('message',function(message,remote){
 
 	mensaje = JSON.parse(message);
 
-	console.log(mensaje);
-
-	if( mensaje.COD == '105' ){
+	if( mensaje.COD == 105 ){
 
 		if( ! (_.contains(IPes,mensaje.IP)) ){
 
