@@ -22,31 +22,19 @@ $("#submit").on('click',function(){
 	
  
 	infoJuego.nombrePartida    = $("#nombrePartida").val();
-	infoJuego.maximoDePersonas = $("#maximoPersonas").val();
-	infoJuego.maximoDeCartones = $("#maximoCartones").val();	
-	global.infoJuego = infoJuego
+	global.infoJuego = infoJuego;
 
 	var json = {
-		'Codigo': 105,
-		'ip': global.ip,
-		'sala': global.infoJuego.nombrePartida,
-		'maxPersonas': global.infoJuego.maximoDePersonas,
-		'maxCartones': global.infoJuego.maximoDeCartones,
-
+		'COD': 105,
+		'IP': global.ip,
+		'SALA': global.infoJuego.nombrePartida,
 	};
 
 	console.log(json)
 
 	if(infoJuego.nombrePartida==''){
 		$("#nombrePartida").parent().addClass("has-error");
-	}
-	else if(infoJuego.maximoDePersonas==''){		
-		$("#maximoPersonas").parent().addClass("has-error");
-	}
-	else if(infoJuego.maximoDeCartones==''){		
-		$("#maximoCartones").parent().addClass("has-error");
-	}
-	else{
+	} else {
 		network.serverUDP(json, port, '255.255.255.255');		
 	}	
 

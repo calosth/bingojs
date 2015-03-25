@@ -42,6 +42,25 @@ var network = {
 		});	
 	},
 
+	multicast: function(json){
+		var dgram = require('dgram');
+		var server = dgram.createSocket('udp4');	 
+		var multicastAddress = '239.1.2.3';
+		var multicastPort = 5554;
+
+		server.bind(multicastPort, '0.0.0.0',function(){
+			server.addMembership(multicastAddress);
+			server.setMulticastTTL(128);
+			server.setBroadcast(true);
+		});
+
+	    var message = new Buffer(JSON.stringify(json));
+	    server.send(message, 0, message.length, multicastPort, multicastAddress, function(err){
+	    	if (err) console.log(err);
+		    console.log("Sent " + message + " to the wire...");
+	    });			
+	},
+
 	clientTCP: function(json, ip, port){
 		var net = require('net');
 

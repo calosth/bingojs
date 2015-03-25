@@ -35,22 +35,53 @@
 			</div>
 		</div>
 		<div class=""></div>
+		<script type="text/template" class="Players">
+			<div id="alert" class="alert alert-success hidden" role="alert">
+			  <a href="#" class="alert-link"> Alguient cantó </a>
+			</div>
+		</script>		
 <!-- Numero jugados ON -->
 		<div class="row">
 			<div class="text-center lead">
-				Últimos Numeros
+				Últimos Números
 			</div>
 			<div class="col-md-10 col-md-offset-1 alert alert-dismissable alert-warning">
 				<ul class="nav nav-pills">
 					<script type="text/template" class="Numbers">
 
-						<li><span class="badge"><%= Numero %></span></li>
+						<li><span class="badge"><%= NUMERO %></span></li>
 						
 					</script>			
 				</ul>
 			</div>
 		</div>
 <!-- Numero jugados OFF -->
+	<div class="row">
+		<div class="col-md-4">
+			<h3>Jugando:</h3>
+		
+			<table id="players" class="table">
+				<thead>
+			        <tr>
+			          <th>Nombre</th>
+			          <th>IP</th>
+			        </tr>
+			    </thead>
+				<tbody>
+				<script type="text/template" class="Players">
+					<% for (player in players) {%>
+				        <tr>
+				          <td> <%= player.CLIENTE %> </td>
+				          <td> <%= player.IP %> </td>
+				        </tr>
+			        <% } %>
+				</script>			
+			    </tbody>				
+			</table>
+		</div>			
+				
+	</div>
+
 	<div>
 		<a id="btn-FinalizarPartida" href="#" class="btn btn-success">Finalizar Partida</a>
 	</div>

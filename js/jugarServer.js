@@ -1,13 +1,43 @@
+
 // Assets
+
 function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min)) + min;
 }
 
+function sleep(milliseconds) {
+  var start = new Date().getTime();
+  for (var i = 0; i < 1e7; i++) {
+    if ((new Date().getTime() - start) > milliseconds){
+      break;
+    }
+  }
+}
+
+// Variable de cartones enviados
+var cards = [];
+var payers = [];
+var numbers = [];
+var intervalCantarjugada
+// Calcular Hash de IP del servidor
+var md5 = require('MD5');
+var hashIP = md5(global.ip);
+
+var port = 10022; // <<< -- cambiar a configuracion global
+
+// var sound = require('sound.js')
+
+
+var player = new Audio()
+player.src = 'sounds-882-solemn.mp3';
+player.play();
+
+
 var templates = {
-	'number':  _.template( $('script.Numbers').html() )
+	'number':  _.template( $('script.Numbers').html() ),
+	'players':  _.template( $('script.Players').html() )
 };
 
-var port = 10022;
 
 
 function tcp(ip, port){
@@ -28,28 +58,31 @@ function tcp(ip, port){
 		        
 		        console.log('DATA ' + sock.remoteAddress + ': ' + data);
 		        var message = JSON.parse(data)
-		        switch(message.code){
-		        	case '100':
+		        switch(message.COD){
+		        	case 100:
 		        		var json = {
-		        			'code': '101',
-		        			'IDJuego': '231',
+		        			'COD': 101,
+		        			'IDJUEGO': hashIP
 		        		};
 		        		// var message = new Buffer(json);
 				        sock.write(JSON.stringify(json));
+				        message.cards = []
+				        payers.push(message)
+				        // Rendereo al cliente en la interfaz
+				        // $('#players').append(templates.players(players));
 				        break;
-				    case '102':
-				    	var countCard = message.NroCartones;
-				    	var cards = [];
+				    case 102:
+				    	var countCard = message.NROCARTONES;
 				    	for (var i = 0; i < countCard; i++) {				    		
-			    			var card = []
+			    			var card = [];
 			    			var min, max = 0;
 				    		for (var j = 1; j <= 5; j++) {
-				    			var row = []
-				    			min = max + 1
-				    			max = 15 * j
-				    			var count = 0
+				    			var row = [];
+				    			min = max + 1;
+				    			max = 15 * j;
+				    			var count = 0;
 				    			while(count < 5) {
-				    				var number = getRandomInt(min, max);
+				    				var number = getRandomInt(min, max + 1);
 				    				if( !(_.contains(row,number)) ){
 					    				row.push(number);
 					    				count += 1;
@@ -57,22 +90,66 @@ function tcp(ip, port){
 				    			};
 				    			card.push(row)
 				    			if (j == 3){
-				    				row[2] = null
+				    				row[2] = 0;
 				    			}
 				
 				    		};
-				    		cards.push({
-				    			'IDCarton': i,
-			    				'Numeros': card,
-				    		})
-				    	};
-				    	var json = {
-				    		'code':'103',
-				    		'cartones': cards
-				    	};			
+					    	var json = {
+					    		'COD':103,
+					    		'IDCARTON': md5(card),
+					    		'NUMEROS': card
+					    	};	
+					    	// console.log(json);
+					    	// Guardar el carton del jugador
+					    	for (int w=0; w < players.length, w++){
+						    	if(sock.remoteAddress === players[w].IP ){
+						    		players[w].cards = card
+						    	}	
+					    	}
 
-				    	sock.write(JSON.stringify(json)); 	
+					    	sleep(50);
+
+					    	var variable = JSON.stringify(json);
+					    	console.log(variable);
+					    	sock.write(variable); 				    	
+					    	
+					    	// formatear json para almacenar
+					    	if( delete json['COD'] )
+						    	cards.push(json)
+
+
+				    	}
+
 				    	break;
+
+			    	case 306:
+			    		var json = {
+			    			'COD': 302,
+			    			'IDJUEGO': hashIP
+			    		};
+			    		network.multicast(json);
+			    		
+			    		clearInterval(intervalCantarjugada);
+
+			        	if(message.IDJUEGO === hashIP ){
+			        		// recorrer los cartones que he enviado
+			        		for (card in cards){ 
+			        			if( card.IDCARTON === message.IDCARTON ){
+			        				// comprobar matriz
+			        				$('#alert').removeClass('hidden');
+			        				// Bingo acceptado
+			        				if(true){
+			        					var json = {
+			        						'COD': 307,
+			        						'IDJUEGO': hashIP,
+			        						'TIPOBINGO': tipoBingo,
+			        						'CLIENTE': cliente
+			        					};
+			        					network.multicast(json);
+			        				}
+			        			}
+			        		}
+			        	}
 		        	default:
 		        }
 		        // Write the data back to the socket, the client will receive it as data from the server
@@ -87,86 +164,101 @@ function tcp(ip, port){
 		}).listen(PORT, HOST);
 };
 
-tcp(global.ip, 10022);
+tcp(global.ip, port);
 
 
+var intervalSendBroadcast
 // Envio cada segundo el broadcast con la partida
-var json1 = {
-	'code': 105,
-	'ip': global.ip,
-	'sala': global.infoJuego.nombrePartida,
-	'maxPersonas': global.infoJuego.maximoDePersonas,
-	'maxCartones': global.infoJuego.maximoDeCartones,
-};
-var intervalSendBroadcast = setInterval(function(){
-	network.serverUDP(json1, port, '255.255.255.255');		
-},1000);
+function sendBroadcast() {
+	var json1 = {
+		'COD': 105,
+		'IP': global.ip,
+		'SALA': global.infoJuego.nombrePartida,
+	};
+	intervalSendBroadcast = setInterval(function(){
+		network.serverUDP(json1, port, '255.255.255.255');		
+	},1000);
+}
 
-// Variable de ID de intervalo de jugada
-var intervalCantarjugada
-// Empezar Envio de cartones
-$("#btn-empezar").on("click",function(){
+sendBroadcast()
 
-	clearInterval(intervalSendBroadcast);
+function cantar(){
+	// Variable de ID de intervalo de jugada
 
-	var dgram = require('dgram');
-	var server = dgram.createSocket('udp4');	 
-	var multicastAddress = '239.1.2.3';
-	var multicastPort = 5554;
-	var quantity = 1;
+	// Empezar Envio de cartones
+	$("#btn-empezar").on("click",function(){
 
-	server.bind(multicastPort, '0.0.0.0',function(){
-		server.addMembership(multicastAddress);
-		server.setMulticastTTL(128);
-		server.setBroadcast(true);
+		clearInterval(intervalSendBroadcast);
+		var quantity = 1;
+
+
+		// Anunciando inicio de juego
+		var json = {
+				'COD': 300,
+				'IPJUEGO': hashIP									// <<<-----------
+			};
+	    network.multicast(json);
+
+		var number;
+
+		// Intervalo de tiempo que canta numeros
+		intervalCantarjugada = setInterval(function(){
+
+			// if(numbers.length === 74)
+				// return
+
+			do{
+				number = getRandomInt(1,76);
+			}while( _.contains(numbers,number) );
+			numbers.push(number)
+			var json = {
+				'COD':308,
+				'IPJUEGO': hashIP,									// <<<-----------
+				'NROJUGADA':quantity,
+				'NUMERO': number
+			};
+
+			quantity = quantity + 1;
+			network.multicast(json);
+			$('ul.nav.nav-pills').append(templates.number(json));
+
+		},500);
+
+
 	});
 
-	// Anunciando inicio de juego
+
+	$("#btn-FinalizarPartida").on('click',function(){
+		clearInterval(intervalCantarjugada);
+		json = {
+			'COD': 301,
+			'IDJUEGO': hashIP
+		};
+		network.multicast(json);
+		window.location.href = "index.html";
+		// Implementa el envio en multicast de fin de juego
+	});
+
+}
+
+cantar();
+
+function BingoCantado(){
+	// Bingo cantado
 	var json = {
-			'code':'300',
-			'IDJuego':4,									// <<<-----------
+			'COD': 302,
+			'IPJUEGO': hashIP									// <<<-----------
 		};
-    var message = new Buffer(JSON.stringify(json));
-    server.send(message, 0, message.length, multicastPort, multicastAddress, function(err){
-    	if (err) console.log(err);
-	    console.log("Sent " + message + " to the wire...");
-    });
+	network.multicast(json)
+}
 
-
-	var numbers = [];
-	var number;
-
-	// Intervalo de tiempo que canta numeros
-	intervalCantarjugada = setInterval(function(){
-
-		do{
-			number = getRandomInt(1,75);
-		}while( _.contains(numbers,number) );
-		numbers.push(number)
-		var json = {
-			'code':'308',
-			'NroJugada':quantity,
-			'Numero': number,
-			'IDJuego':'4',									// <<<-----------
+function BingoAceptado(){
+	// Bingo aceptado
+	var json = {
+			'COD': 307,
+			'IPJUEGO': hashIP,
+			'TIPOBINGO': 1,
+			'CLIENTE': 'cliente'								// <<<-----------
 		};
-
-		quantity = quantity + 1;
-		$('ul.nav.nav-pills').append(templates.number(json));
-
-	    var message = new Buffer(JSON.stringify(json));
-	    server.send(message, 0, message.length, multicastPort, multicastAddress, function(err){
-	    	if (err) console.log(err);
-		    console.log("Sent " + message + " to the wire...");
-	    });
-
-	},3000);
-
-
-});
-
-
-$("#btn-FinalizarPartida").on('click',function(){
-	clearInterval(intervalCantarjugada);
-});
-
-
+	network.multicast(json)
+}
