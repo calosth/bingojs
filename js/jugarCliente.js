@@ -1,5 +1,14 @@
 //Cantidad de cartones que el cliente quiere
 var boardNumber = '';
+var message;
+
+
+var arregloCartones = []; // Arreglo de objetos que permite manejar los cartones del usuario
+var matrizReferencia = []; // Matrices que ayudan a verificar los aciertos
+
+var net = require('net');
+
+var prueba = [];
 
 //Objeto que contiene a los templates
 var templates = {
@@ -12,35 +21,49 @@ var conexion = function(ip, port){
 	var json = {};
 	var HOST = ip;
 	var PORT = port;
+	var carton;
+	var client = new net.Socket();
 
-	var client = new network.net.Socket();
 
 	client.connect(PORT, HOST, function(){
 
+		var zeros = [[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0]];
+		
 		multicast('239.1.2.3');
 
 		//Apenas se conecte solicitará la cantidad de cartones
 		json = {
-			'Codigo':'102',
-			'NroCartones':boardNumber
+			'COD':'102',
+			'NROCARTONES':boardNumber
 		};
 
 		client.write(JSON.stringify(json));
+
+		for( var i = 0; i < boardNumber; i++ )
+			matrizReferencia.push( zeros );
+
+		// console.log( matrizReferencia.length );
 
 	});
 
 	client.on('data', function(data){
 
-		var message = JSON.parse(data);
-		
-		switch(message.Codigo){
+
+		message = JSON.parse( data );
+				
+		switch(message.COD){
 
 			//Cuando recibe los cartones
 			case '103':
+				carton = message;
 
-				for(i in message.cartones)
-					$('#boards-content').append(templates.board(message.cartones[i]));
-				
+				console.log( message );
+				$('#boards-content').append(templates.board(message));
+		
+				if( delete carton['COD'] )
+					arregloCartones.push( carton );
+
+
 				break;			
 
 			default:
@@ -70,7 +93,7 @@ var multicast = function(ip){
 
 		var message = JSON.parse(data);
 
-		switch(message.Codigo){
+		switch(message.COD){
 
 			//Cuando el servidor indique que se comenzó a jugar
 			case '300':
@@ -99,7 +122,15 @@ var multicast = function(ip){
 			case '308':
 
 				$('ul.nav.nav-pills').append(templates.number(message));
-				$("."+message.Numero).addClass("info");
+				$("."+message.NUMERO).addClass("info");
+
+				// console.log( arregloCartones );
+
+				verificarNumeroLlegado( parseInt(message.NUMERO,10) );
+
+				// console.log( '-----------' );
+				// for( i in matrizReferencia )
+				// 	console.log( matrizReferencia[i] );
 
 				break;
 
@@ -121,3 +152,31 @@ $('#aceptarNumero').on('click',function(){
 	}
 
 });
+
+var verificarNumeroLlegado = function( numeroCantado ){
+
+	var posicion;
+	var carton;
+	var matrizCeros;
+
+	for( i in arregloCartones ){
+		carton = arregloCartones[i].NUMEROS;
+		for( j in carton ){
+			posicion = _.indexOf( carton[j], numeroCantado );
+			if( posicion  != -1 ){
+				matrizReferencia[i][j][posicion] = 1;
+			}
+		}
+	}
+
+	console.log( '=============' );
+	for (i in matrizReferencia)
+		console.log( matrizReferencia[i] );
+
+};
+
+
+
+
+
+

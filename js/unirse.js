@@ -17,9 +17,9 @@ var conexionInicio = function(ip, port){
 
 	var json = {
 
-		'Codigo':'100',
-		'ip':ip,
-		'cliente':playerName,
+		'COD':'100',
+		'IP':ip,
+		'CLIENTE':playerName,
 
 	};
 
@@ -39,7 +39,7 @@ var conexionInicio = function(ip, port){
 		var mensaje = JSON.parse(data);
 		console.log(mensaje);
 
-		if(mensaje.Codigo == '101'){
+		if(mensaje.COD == '101'){
 
 			// client.destroy();
 			window.location.href = "jugarCliente.html";
@@ -56,13 +56,13 @@ network.udp.on('message',function(message,remote){
 
 	console.log(mensaje);
 
-	if( mensaje.Codigo == '105' ){
+	if( mensaje.COD == '105' ){
 
-		if( ! (_.contains(IPes,mensaje.ip)) ){
+		if( ! (_.contains(IPes,mensaje.IP)) ){
 
 			$("#content-partidas").append( templates.available(mensaje) );
 
-			IPes.push(mensaje.ip);
+			IPes.push(mensaje.IP);
 
 			$(".btn-join").on("click",function (){
 
