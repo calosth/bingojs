@@ -18,7 +18,9 @@ function sleep(milliseconds) {
 var cards = [];
 var players = [];
 var numbers = [];
-var intervalCantarjugada
+var intervalCantarjugada;
+var idCount = 0;
+
 // Calcular Hash de IP del servidor
 var md5 = require('MD5');
 var hashIP = md5(global.ip);
@@ -68,10 +70,11 @@ function tcp(ip, port){
 			        message.cards = []
 			        players.push(message)
 			        // Rendereo al cliente en la interfaz
-			        // $('#players').append(templates.players(players));
+			        $('#players').html(templates.players(players));
 			        break;
 			    case 102:
 			    	var countCard = message.NROCARTONES;
+
 			    	for (var i = 0; i < countCard; i++) {				    		
 		    			var card = [];
 		    			var min, max = 0;
@@ -94,10 +97,11 @@ function tcp(ip, port){
 			
 			    		};
 				    	
-				    	var idCarton = md5(card)
+				    	// var idCarton = md5(getRandomInt(0, 100))
+				    	idCount = idCount + 1;
 				    	var json = {
 				    		'COD':103,
-				    		'IDCARTON': idCarton,
+				    		'IDCARTON': idCount,
 				    		'NUMEROS': card
 				    	};	
 
@@ -120,6 +124,7 @@ function tcp(ip, port){
 				    	}
 
 			    	}
+			    	$('#players').html(templates.players(players));
 
 			    	break;
 
@@ -135,21 +140,21 @@ function tcp(ip, port){
 
 		        	if(message.IDJUEGO == hashIP ){
 		        		// recorrer los cartones que he enviado
+        				console.log(message.IDJUEGO);
 		        		for (i in cards){ 
 		        			if( cards[i].IDCARTON == message.IDCARTON ){
 		        				
 		        				
 		        				// comprobar matriz
 		        				var bingoAceptado = comprobarBingo(cards[i].NUMEROS, numbers);
-		        				console.log(bingoAceptado);
 		        				if(bingoAceptado){
 
 		        					// Encontrar cliente ganador
-		        					var client = ''
+		        					// var client = ''
 			        				for(var w in players){
 			        					for(var j in players[w].cards){
-				        					if(players[i].cards[j].IDCARTON == message.IDCARTON){
-				        						client = players[i].CLIENTE
+				        					if(players[w].cards[j].IDCARTON == message.IDCARTON){
+				        						client = players[w].CLIENTE
 				        					}
 				        				}
 			        				} 
@@ -161,9 +166,6 @@ function tcp(ip, port){
 		        						'CLIENTE': client
 		        					};
 		        					network.multicast(json);
-		        					console.log("--------------------------------------------------------");
-		        					console.log(json);
-		        					console.log("--------------------------------------------------------");
 		        				} else {
 		        					// Hacer si el bingo no se acepto
 		        				}
@@ -225,8 +227,8 @@ function cantar(){
 		// Intervalo de tiempo que canta numeros
 		intervalCantarjugada = setInterval(function(){
 
-			// if(numbers.length === 74)
-				// return
+			if(numbers.length === 75)
+				return
 
 			do{
 				number = getRandomInt(1,76);
@@ -243,7 +245,7 @@ function cantar(){
 			network.multicast(json);
 			$('ul.nav.nav-pills').append(templates.number(json));
 
-		},1000);
+		},50);
 
 
 	});
@@ -306,24 +308,24 @@ var comprobarBingo = function(card, numerosCantados){
 	var verificacion = 1; 
 
 	//Verifica si la matriz binaria esta llena de 1
-	for( i in matrizBinaria )
+	for(var i =0; i < 5; i++ )
 		verificacion = verificacion && !( _.contains( matrizBinaria[i], 0 ) );
 
 	if(verificacion)
 		return 1; // Carton llegno
 
 	for(var item in matrizBinaria) {
-		var rowVertical = [];
+		var rowHorizontal = [];
 		
 		// Verificacion horizontal
 		if(!( _.contains( matrizBinaria[item], 0 )))
-			return 2; //Bingo horizontal
+			return 3; //Bingo horizontal
 		
 		for(var j=0; j < 5; j++){
 
 			// Comprobar bingo vertical
 			if( matrizBinaria[j][item] == 1 )
-				rowVertical.push(1);
+				rowHorizontal.push(1);
 			
 			if (item == j){
 				if( matrizBinaria[item][j] == 1 )
@@ -337,8 +339,8 @@ var comprobarBingo = function(card, numerosCantados){
 
 		}
 		// Verificacion vertical
-		if(!( _.contains( rowVertical, 0 )) && rowVertical.length == 5 )
-			return 3; // bingo vertical
+		if(!( _.contains( rowHorizontal, 0 )) && rowHorizontal.length == 5 )
+			return 2; // bingo vertical
 	}
 
 
