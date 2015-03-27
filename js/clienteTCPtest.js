@@ -1,4 +1,4 @@
-
+var player = new Player('../sounds/sounds-882-solemn.mp3.mp3');
 var _ = require('./underscore.js');
 
 function getRandomInt(min, max) {

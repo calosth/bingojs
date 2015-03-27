@@ -27,7 +27,8 @@
 	</nav>	
 	<div class="container">
 		<div>
-			<a id="btn-empezar" href="#" class="btn btn-success">Empezar</a>
+			<a id="btn-empezar" href="#" class="btn btn-success"> <span class="glyphicon glyphicon-bullhorn" aria-hidden="true"></span> Empezar</a>
+			<a id="btn-FinalizarPartida" href="#" class="btn btn-danger">Finalizar Partida</a>
 		</div>
 		<div class="row">
 			<div class="text-center">
@@ -49,7 +50,7 @@
 				<ul class="nav nav-pills">
 					<script type="text/template" class="Numbers">
 
-						<li><span class="badge"><%= NUMERO %></span></li>
+						<li><span class="lead">&nbsp;<kbd class="img-circle"><%= NUMERO %></kbd></span></li>
 						
 					</script>			
 				</ul>
@@ -57,15 +58,16 @@
 		</div>
 <!-- Numero jugados OFF -->
 	<div class="row">
-		<div class="col-md-4">
-			<h3>Jugando:</h3>
+		<div class="col-md-5 ">
+			<h4>Jugando:</h4>
 		
-			<table class="table">
+			<table class="table table-condensed">
 				<thead>
 			        <tr>
-			          <th>Nombre</th>
-			          <th>IP</th>
-			          <th>ID de Cartones</th>
+			        	<th></th>
+			          	<th>Nombre</th>
+			          	<th col="4">IP</th>
+			          	<th>ID de Cartones</th>
 			        </tr>
 			    </thead>
 				<tbody id="players">
@@ -76,14 +78,13 @@
 				
 	</div>
 
-	<div>
-		<a id="btn-FinalizarPartida" href="#" class="btn btn-success">Finalizar Partida</a>
-	</div>
+
 
 	</div>
 	<script type="text/template" class="Players">
 		<% for (var i in players) {%>
 	        <tr>
+	        	<td><span class="glyphicon glyphicon-user" aria-hidden="true"></span> </td>
 				<td> <%= players[i].CLIENTE %> </td>
 				<td> <%= players[i].IP %> </td>
 				<td>
