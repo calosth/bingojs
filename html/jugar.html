@@ -35,7 +35,7 @@
 			</div>
 		</div>
 		<div class=""></div>
-		<script type="text/template" class="Players">
+		<script type="text/template" class="m">
 			<div id="alert" class="alert alert-success hidden" role="alert">
 			  <a href="#" class="alert-link"> Alguient cantó </a>
 			</div>
@@ -60,22 +60,16 @@
 		<div class="col-md-4">
 			<h3>Jugando:</h3>
 		
-			<table id="players" class="table">
+			<table class="table">
 				<thead>
 			        <tr>
 			          <th>Nombre</th>
 			          <th>IP</th>
+			          <th>ID de Cartones</th>
 			        </tr>
 			    </thead>
-				<tbody>
-				<script type="text/template" class="Players">
-					<% for (player in players) {%>
-				        <tr>
-				          <td> <%= player.CLIENTE %> </td>
-				          <td> <%= player.IP %> </td>
-				        </tr>
-			        <% } %>
-				</script>			
+				<tbody id="players">
+
 			    </tbody>				
 			</table>
 		</div>			
@@ -87,10 +81,19 @@
 	</div>
 
 	</div>
-<script>
-
-
-</script>  
+	<script type="text/template" class="Players">
+		<% for (var i in players) {%>
+	        <tr>
+				<td> <%= players[i].CLIENTE %> </td>
+				<td> <%= players[i].IP %> </td>
+				<td>
+		          	<% for (var w in players[i].cards) {%>
+						<%= players[i].cards[w].IDCARTON %>
+			        <% } %>
+          		</td>	
+	        </tr>
+        <% } %>
+	</script>  
 	<script src="../js/jquery.js"></script>
 	<script src="../js/underscore.js"></script>
 	<script src="../js/network.js"></script>
