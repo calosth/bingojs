@@ -2,8 +2,8 @@
 var boardNumber = '';
 var arregloCartones = []; // Arreglo de objetos que permite manejar los cartones del usuario
 var matrizReferencia = []; // Matrices que ayudan a verificar los aciertos
-
 var net = require('net');
+var Player = require('player');
 
 var prueba = [];
 
@@ -94,11 +94,7 @@ var multicast = function(ip, clienteTCP){
 			//Cuando el servidor indique que se comenzó a jugar
 			case 300:
 
-				$('modalComenzamos').modal('show').on('shown',function(){
-					window.setTimeout(function(){
-						$('modalComenzamos').modal('hide');
-					}, 1500);
-				});
+				toastr.success('Comenzamos!','Info');
 
 				// for(i in arregloCartones)
 					console.log( arregloCartones );
@@ -107,7 +103,8 @@ var multicast = function(ip, clienteTCP){
 
 			case 301:
 
-				$('modalTermino').modal('show').on('shown',function(){
+				$('#modalTermino').modal('show').on('shown',function(){
+
 					window.setTimeout(function(){
 						$('modalTermino').modal('hide');
 					}, 1500);
@@ -122,6 +119,7 @@ var multicast = function(ip, clienteTCP){
 
 				$('ul.nav.nav-pills').append(templates.number(message));
 				$("."+message.NUMERO).addClass("info");
+				document.getElementById(sonidoLlegoNumero).play();
 
 				// console.log( arregloCartones );
 
@@ -181,7 +179,7 @@ var verificarCarton = function( clienteTCP, arregloObjCartones ){
 		console.log( arregloObjCartones[i] );
 
 		/// Se envia la matriz binaria que corresponde para verificar
-		objBingoCompleto = bingoCompleto(matrizBinaria, i); 
+		objBingoCompleto = bingoAlgunaGanancia(matrizBinaria, i); 
 
 		//Si esta completo el carton
 		if( objBingoCompleto.verificacion ){ 
@@ -190,6 +188,7 @@ var verificarCarton = function( clienteTCP, arregloObjCartones ){
 			json = {
 
 				'COD':306,
+				'IDJUEGO':global.IDJuego,
 				'IDCARTON':arregloObjCartones[i].IDCARTON,
 				'NUMEROS':arregloObjCartones[i].NUMEROS,
 				'ACIERTOS':objBingoCompleto.arrayAciertos
@@ -205,10 +204,11 @@ var verificarCarton = function( clienteTCP, arregloObjCartones ){
 
 };
 
-var bingoCompleto = function( matrizBinaria, numeroCarton ){
+var bingoAlgunaGanancia = function( matrizBinaria, numeroCarton ){
 
 	//Si esta lleno
-	var verificacion = 1; 
+	var verificacionCompleto = 1;
+	// var verificacionVertical = 1;
 	//Objeto que retornará con los datos del carton
 	var objetoVerificacion = {}; 
 	//Array que estará en el objeto para retornar
@@ -216,21 +216,36 @@ var bingoCompleto = function( matrizBinaria, numeroCarton ){
 
 	//Verifica si la matriz binaria esta llena de 1
 	for( i in matrizBinaria )
-		verificacion = verificacion && !( _.contains( matrizBinaria[i], 0 ) );
+		verificacionCompleto = verificacionCompleto && !( _.contains( matrizBinaria[i], 0 ) );
 
 	// Si esta llena
-	if(verificacion) 
-		for( i in matrizBinaria )
-			for(j in matrizBinaria[i])
+	if(verificacionCompleto){ 
+		for( i in matrizBinaria ){
+			for(j in matrizBinaria[i]){
 				arrayAciertos.push(arregloCartones[numeroCarton].NUMEROS[i][j]);
-				//Recorre todo el carton para agregar en un arreglo los aciertos (todos)
+			}
+		}
+		//Recorre todo el carton para agregar en un arreglo los aciertos (todos)
 
-	objetoVerificacion = {
+		objetoVerificacion = {
 
-		'verificacion':verificacion,
-		'arrayAciertos': arrayAciertos
+			'verificacion':verificacionCompleto,
+			'arrayAciertos': arrayAciertos
 
-	};
+		};
+	}
+	// else{
+
+
+	// 	for( i in matrizBinaria ){
+
+	// 		if( !( _.contains( matrizBinaria[i], 0 ) ) ){
+	// 			verificacionVertical = 1;
+	// 		}
+
+	// 	}
+
+	// }
 	
 	//retorna el objeto 
 	return objetoVerificacion; 

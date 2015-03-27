@@ -3,12 +3,12 @@
   "main": "./html/index.html",
   "window": {
     "title": "BingoProtocol",
-    "frame": false,
-    "toolbar": false,
+    "frame": true,
+    "toolbar": true,
     "width": 1200,
     "height": 600,
-    "min_width": 800,
-    "min_height": 600,
+    "min_width": 400,
+    "min_height": 300,
     "max_width": 1400,
     "max_height": 1000,
     "position": "center"  

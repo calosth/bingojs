@@ -4,9 +4,11 @@
 	<meta charset="UTF-8">
 	<link rel="stylesheet" href="../css/styles.css">
 	<link rel="stylesheet" href="../css/bootstrap.min.css">
+	<link rel="stylesheet" href="../css/toastr.css">
 	<title>BingoJS</title>
 </head>
 <body>
+	<!-- <audio id="sonidoLlegoNumero" type="audio/mpeg" src="../js/prueba.mp3" class=""></audio> -->
 	<nav class="navbar navbar-default navbar-static-top">
 		<div class="container">
 			<div class="navbar-header">
@@ -124,18 +126,35 @@
 		</script>
 
 		<script type="text/template" class="Numbers">
-			<li><span class="badge"><%= NUMERO %></span></li>
+			<li><span class="badge lead"><%= NUMERO %></span></li>
 		</script>
 		<!-- Templates OFF -->
-
 		<script src="../js/jquery.js"></script>
 		<script src="../js/underscore.js"></script>
 		<script src="../js/bootstrap.min.js"></script>
 		<script src="../js/network.js"></script>
+		<script src="../js/toastr.js"></script>
 		<script src="../js/jugarCliente.js"></script>
 		<script>			
 			$('#myModal').modal('show');
 			$('#numero').focus();
+			toastr.options = {
+			  "closeButton": true,
+			  "debug": false,
+			  "newestOnTop": false,
+			  "progressBar": false,
+			  "positionClass": "toast-top-center",
+			  "preventDuplicates": false,
+			  "onclick": null,
+			  "showDuration": "2000",
+			  "hideDuration": "2000",
+			  "timeOut": "2000",
+			  "extendedTimeOut": "2000",
+			  "showEasing": "swing",
+			  "hideEasing": "linear",
+			  "showMethod": "fadeIn",
+			  "hideMethod": "fadeOut"
+			};
 		</script>
 
 </body>

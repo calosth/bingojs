@@ -43,6 +43,7 @@ var conexionInicio = function(ip, port){
 		if(mensaje.COD == 101){
 
 			// client.destroy();
+			global.IDJuego = mensaje.IDJUEGO;
 			window.location.href = "jugarCliente.html";
 
 		}

@@ -20,8 +20,8 @@ var players = [];
 var numbers = [];
 var intervalCantarjugada
 // Calcular Hash de IP del servidor
-var md5 = require('MD5');
-var hashIP = md5(global.ip);
+// var md5 = require('MD5');
+// var hashIP = md5(global.ip);
 
 var port = 10022; // <<< -- cambiar a configuracion global
 
@@ -94,7 +94,7 @@ function tcp(ip, port){
 			
 			    		};
 				    	
-				    	var idCarton = md5(card)
+				    	// var idCarton = md5(card)
 				    	var json = {
 				    		'COD':103,
 				    		'IDCARTON': idCarton,
