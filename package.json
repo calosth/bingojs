@@ -19,7 +19,8 @@
   "version": "0.0.0",
   "description": "",
   "dependencies": {
-    "async": "^0.9.0"
+    "async": "^0.9.0",
+    "player": "0.3.2"
   },
   "devDependencies": {},
   "scripts": {
@@ -34,5 +35,6 @@
   "bugs": {
     "url": "https://github.com/calosth/bingojs/issues"
   },
-  "homepage": "https://github.com/calosth/bingojs"
+  "homepage": "https://github.com/calosth/bingojs",
+  "description": "des"
 }

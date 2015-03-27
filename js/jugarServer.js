@@ -21,6 +21,8 @@ var numbers = [];
 var intervalCantarjugada;
 var idCount = 0;
 
+// var Player1 = require('player');
+
 // Calcular Hash de IP del servidor
 // var md5 = require('MD5');
 // var hashIP = md5(global.ip);
@@ -152,7 +154,7 @@ function tcp(ip, port){
 		        				if(bingoAceptado){
 
 		        					// Encontrar cliente ganador
-		        					// var client = ''
+		        					var client = ''
 			        				for(var w in players){
 			        					for(var j in players[w].cards){
 				        					if(players[w].cards[j].IDCARTON == message.IDCARTON){
@@ -182,9 +184,16 @@ function tcp(ip, port){
 	    });
 	    
 	    // Add a 'close' event handler to this instance of socket
-	    // sock.on('close', function(data) {
-	    //     console.log('CLOSED: ' + sock.remoteAddress +' '+ sock.remotePort);
-	    // });
+	    sock.on('close', function(data) {
+	        console.log('CLOSED: ' + sock.remoteAddress +' '+ sock.remotePort);
+	    	for (var w in players){
+		    	if(sock.remoteAddress == players[w].IP ){
+				    	players.slice(w,1);
+		    	}	
+	    	}
+	    	$('#players').html(templates.players(players));	        
+
+	    });
 	    
 	}).listen(PORT, HOST);
 };
@@ -212,7 +221,7 @@ function cantar(){
 
 	// Empezar Envio de cartones
 	$("#btn-empezar").on("click",function(){
-
+		$(this).addClass('disabled');
 		clearInterval(intervalSendBroadcast);
 		var quantity = 1;
 
@@ -227,6 +236,8 @@ function cantar(){
 		var number;
 
 		// Intervalo de tiempo que canta numeros
+
+		// var player1 = new Player1('sounds-882-solemn.mp3');
 		intervalCantarjugada = setInterval(function(){
 
 			if(numbers.length === 75)
@@ -245,9 +256,10 @@ function cantar(){
 
 			quantity = quantity + 1;
 			network.multicast(json);
+			// player1.play()
 			$('ul.nav.nav-pills').append(templates.number(json));
 
-		},50);
+		},1000);
 
 
 	});
