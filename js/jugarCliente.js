@@ -19,12 +19,11 @@ var conexion = function(ip, port){
 	var HOST = ip;
 	var PORT = port;
 	var carton;
-	var client = new net.Socket();
 	var message;
 
-	client.connect(PORT, HOST, function(){
+	var client = new net.Socket();
 
-		
+	client.connect(PORT, HOST, function(){
 
 		//Apenas se conecte solicitará la cantidad de cartones
 		json = {
@@ -37,12 +36,11 @@ var conexion = function(ip, port){
 		for( var i = 0; i < boardNumber; i++ )
 			matrizReferencia.push( [[0,0,0,0,0],[0,0,0,0,0],[0,0,1,0,0],[0,0,0,0,0],[0,0,0,0,0]] );
 
-
 		multicast('239.1.2.3', client);
+
 	});
 
 	client.on('data', function(data){
-
 
 		message = JSON.parse( data );
 				
@@ -103,14 +101,8 @@ var multicast = function(ip, clienteTCP){
 
 			case 301:
 
-				$('#modalTermino').modal('show').on('shown',function(){
-
-					window.setTimeout(function(){
-						$('modalTermino').modal('hide');
-					}, 1500);
-				});
-
-				window.location.href = 'index.html';
+				toastr.error('Ha finalizado la partida')
+				clienteTCP.destroy();
 
 				break;
 

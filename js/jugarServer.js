@@ -28,6 +28,7 @@ var idCount = 0;
 var md5 = require('MD5');
 var hashIP = md5(global.ip);
 
+
 var port = 10022; // <<< -- cambiar a configuracion global
 
 
