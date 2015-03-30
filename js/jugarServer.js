@@ -1,6 +1,7 @@
 
 // Assets
 
+
 function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min)) + min;
 }
@@ -24,8 +25,8 @@ var idCount = 0;
 // var Player1 = require('player');
 
 // Calcular Hash de IP del servidor
-// var md5 = require('MD5');
-// var hashIP = md5(global.ip);
+var md5 = require('MD5');
+var hashIP = md5(global.ip);
 
 var port = 10022; // <<< -- cambiar a configuracion global
 
@@ -61,124 +62,131 @@ function tcp(ip, port){
 		    catch (err){
 		    	console.log("ERROR");
 		    }
-	        switch(message.COD){
-	        	case 100:
-	        		var json = {
-	        			'COD': 101,
-	        			'IDJUEGO': hashIP
-	        		};
-	        		// var message = new Buffer(json);
-			        sock.write(JSON.stringify(json));
-			        message.cards = []
-			        players.push(message)
-			        // Rendereo al cliente en la interfaz
-			        $('#players').html(templates.players(players));
-			        break;
-			    case 102:
-			    	var countCard = message.NROCARTONES;
 
-			    	for (var i = 0; i < countCard; i++) {				    		
-		    			var card = [];
-		    			var min, max = 0;
-			    		for (var j = 1; j <= 5; j++) {
-			    			var row = [];
-			    			min = max + 1;
-			    			max = 15 * j;
-			    			var count = 0;
-			    			while(count < 5) {
-			    				var number = getRandomInt(min, max + 1);
-			    				if( !(_.contains(row,number)) ){
-				    				row.push(number);
-				    				count += 1;
-			    				};
-			    			};
-			    			card.push(row)
-			    			if (j == 3){
-			    				row[2] = 0;
-			    			}
-			
-			    		};
-				    	
+		    try {
+		        switch(message.COD){
+		        	case 100:
+		        		var json = {
+		        			'COD': 101,
+		        			'IDJUEGO': hashIP
+		        		};
+		        		// var message = new Buffer(json);
+				        sock.write(JSON.stringify(json));
+				        message.cards = []
+				        players.push(message)
+				        // Rendereo al cliente en la interfaz
+				        $('#players').html(templates.players(players));
+				        break;
+				    case 102:
+				    	var countCard = message.NROCARTONES;
 
-
-				    	idCount = idCount + 1;
-
-				    	var json = {
-				    		'COD':103,
-				    		'IDCARTON': idCount,
-				    		'NUMEROS': card
-				    	};	
+				    	for (var i = 0; i < countCard; i++) {				    		
+			    			var card = [];
+			    			var min, max = 0;
+				    		for (var j = 1; j <= 5; j++) {
+				    			var row = [];
+				    			min = max + 1;
+				    			max = 15 * j;
+				    			var count = 0;
+				    			while(count < 5) {
+				    				var number = getRandomInt(min, max + 1);
+				    				if( !(_.contains(row,number)) ){
+					    				row.push(number);
+					    				count += 1;
+				    				};
+				    			};
+				    			card.push(row)
+				    			if (j == 3){
+				    				row[2] = 0;
+				    			}
+				
+				    		};
+					    	
 
 
+					    	idCount = idCount + 1;
 
-				    	sleep(50);
+					    	var json = {
+					    		'COD':103,
+					    		'IDCARTON': idCount,
+					    		'NUMEROS': card
+					    	};	
 
-				    	var variable = JSON.stringify(json);
-				    	sock.write(variable); 				    	
-				    	
-				    	// formatear json para almacenar
-				    	if( delete json['COD'] )
-					    	cards.push(json);
 
-				    	// Guardar el carton del jugador
-				    	for (var w in players){
-					    	if(sock.remoteAddress == players[w].IP ){
-						    		players[w].cards.push(json)
-					    	}	
+
+					    	sleep(50);
+
+					    	var variable = JSON.stringify(json);
+					    	sock.write(variable); 				    	
+					    	
+					    	// formatear json para almacenar
+					    	if( delete json['COD'] )
+						    	cards.push(json);
+
+					    	// Guardar el carton del jugador
+					    	for (var w in players){
+						    	if(sock.remoteAddress == players[w].IP ){
+							    		players[w].cards.push(json)
+						    	}	
+					    	}
+
 				    	}
+				    	$('#players').html(templates.players(players));
 
-			    	}
-			    	$('#players').html(templates.players(players));
+				    	break;
 
-			    	break;
+			    	case 306:
+			    		var json = {
+			    			'COD': 302,
+			    			'IDJUEGO': hashIP
+			    		};
+			    		network.multicast(json);
+			    		
+			    		// Detener el canto de numeros 
+			    		clearInterval(intervalCantarjugada);
 
-		    	case 306:
-		    		var json = {
-		    			'COD': 302,
-		    			'IDJUEGO': hashIP
-		    		};
-		    		network.multicast(json);
-		    		
-		    		// Detener el canto de numeros 
-		    		clearInterval(intervalCantarjugada);
+			        	if(message.IDJUEGO == hashIP ){
+			        		// recorrer los cartones que he enviado
+	        				console.log(message.IDJUEGO);
+			        		for (i in cards){ 
+			        			if( cards[i].IDCARTON == message.IDCARTON ){
+			        				
+			        				
+			        				// comprobar matriz
+			        				var bingoAceptado = comprobarBingo(cards[i].NUMEROS, numbers);
+			        				if(bingoAceptado){
 
-		        	if(message.IDJUEGO == hashIP ){
-		        		// recorrer los cartones que he enviado
-        				console.log(message.IDJUEGO);
-		        		for (i in cards){ 
-		        			if( cards[i].IDCARTON == message.IDCARTON ){
-		        				
-		        				
-		        				// comprobar matriz
-		        				var bingoAceptado = comprobarBingo(cards[i].NUMEROS, numbers);
-		        				if(bingoAceptado){
+			        					// Encontrar cliente ganador
+			        					var client = ''
+				        				for(var w in players){
+				        					for(var j in players[w].cards){
+					        					if(players[w].cards[j].IDCARTON == message.IDCARTON){
+					        						client = players[w].CLIENTE
+					        					}
+					        				}
+				        				} 
+				        				toastr.success('Hay Ganador!, ' + client,'Info');
+			        					// Hay ganador 
+			        					var json = {
+			        						'COD': 307,
+			        						'IDJUEGO': hashIP,
+			        						'TIPOBINGO': bingoAceptado,
+			        						'CLIENTE': client
+			        					};
+			        					network.multicast(json);
+			        				} else {
+			        					// Hacer si el bingo no se acepto
+			        				}
 
-		        					// Encontrar cliente ganador
-		        					var client = ''
-			        				for(var w in players){
-			        					for(var j in players[w].cards){
-				        					if(players[w].cards[j].IDCARTON == message.IDCARTON){
-				        						client = players[w].CLIENTE
-				        					}
-				        				}
-			        				} 
-		        					// Hay ganador 
-		        					var json = {
-		        						'COD': 307,
-		        						'IDJUEGO': hashIP,
-		        						'TIPOBINGO': bingoAceptado,
-		        						'CLIENTE': client
-		        					};
-		        					network.multicast(json);
-		        				} else {
-		        					// Hacer si el bingo no se acepto
-		        				}
-
-		        			}
-		        		}
-		        	}
-	        	default:
-	        }
+			        			}
+			        		}
+			        	}
+		        	default:
+		        }
+		    }
+		    catch(err){
+		    	toastr.error('Ha ocurrido un error con el cliente ' + sock.remoteAddress + ' '+ err,'Error');
+		    }
 	        // Write the data back to the socket, the client will receive it as data from the server
 	        
 	    });

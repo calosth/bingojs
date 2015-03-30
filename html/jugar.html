@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <link rel="stylesheet" href="../css/styles.css">
   <link rel="stylesheet" href="../css/bootstrap.min.css">
+  <link rel="stylesheet" href="../css/toastr.css">
+
   <script>
   	var gui = require("nw.gui");
 
@@ -98,7 +100,27 @@
 	<script src="../js/jquery.js"></script>
 	<script src="../js/underscore.js"></script>
 	<script src="../js/network.js"></script>
+	<script src="../js/toastr.js"></script>	
 	<script src="../js/jugarServer.js"></script>
-
+	<script>			
+		$('#numero').focus();
+		toastr.options = {
+		  "closeButton": true,
+		  "debug": false,
+		  "newestOnTop": false,
+		  "progressBar": false,
+		  "positionClass": "toast-top-full-width",
+		  "preventDuplicates": true,
+		  "onclick": null,
+		  "showDuration": "10000",
+		  "hideDuration": "2000",
+		  "timeOut": "2000",
+		  "extendedTimeOut": "2000",
+		  "showEasing": "swing",
+		  "hideEasing": "linear",
+		  "showMethod": "fadeIn",
+		  "hideMethod": "fadeOut"
+		};
+	</script>
 </body>
 </html>

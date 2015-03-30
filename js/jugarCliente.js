@@ -3,7 +3,7 @@ var boardNumber = '';
 var arregloCartones = []; // Arreglo de objetos que permite manejar los cartones del usuario
 var matrizReferencia = []; // Matrices que ayudan a verificar los aciertos
 var net = require('net');
-var Player = require('player');
+// var Player = require('player');
 
 var prueba = [];
 
@@ -119,7 +119,7 @@ var multicast = function(ip, clienteTCP){
 
 				$('ul.nav.nav-pills').append(templates.number(message));
 				$("."+message.NUMERO).addClass("info");
-				document.getElementById(sonidoLlegoNumero).play();
+				// document.getElementById(sonidoLlegoNumero).play();
 
 				// console.log( arregloCartones );
 

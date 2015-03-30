@@ -1,9 +1,12 @@
 
 var IPes = [];
 var playerName = '';
+var net = require('net');
 var os = require('os');
 var ifaces = os.networkInterfaces();
-global.myIP = ifaces.en1[1].address;
+// global.myIP = ifaces.en1[1].address;
+global.ip = "10.0.3.4"
+
 
 var templates = {
 
@@ -12,7 +15,6 @@ var templates = {
 };
 
 var conexionInicio = function(ip, port){
-
 	var HOST = ip;
 	var PORT = port;
 
@@ -33,6 +35,7 @@ var conexionInicio = function(ip, port){
 	client.connect(PORT, HOST, function() {
 
 		client.write(mensaje);
+		// client.end();
 
 	});
 
@@ -50,11 +53,14 @@ var conexionInicio = function(ip, port){
 
 	});
 
+
+
 };
 
 network.udp.on('message',function(message,remote){
 
 	mensaje = JSON.parse(message);
+	console.log(mensaje);
 
 	if( mensaje.COD == 105 ){
 
