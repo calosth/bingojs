@@ -1,21 +1,9 @@
+var IPes       =             []; //Array de los IP de los server disponibles
+var playerName =             ''; //Nombre del jugador
 
-var IPes = [];
-var playerName = '';
-var net = require('net');
-
-var dgram = require('dgram');
+var        net =             require('net');
+var      dgram =           require('dgram');
 var clienteUDP = dgram.createSocket('udp4');
-
-global.myIP = function(){ 
-
-	var os = require('os');
-	var ifaces = os.networkInterfaces();
-	return ifaces.en1[1].address;
-
- }();
-
-console.log(global.myIP);
-
 
 var templates = {
 	'available': _.template( $('script.availableTemplate').html() )
@@ -58,31 +46,27 @@ var conexionInicio = function(ip, port){
 
 clienteUDP.on('message',function(message,remote){
 
-
-	try{mensaje = JSON.parse(message);}
-	catch(err){console.log(err);}
+	try{
+		mensaje = JSON.parse(message);
+	}catch(err){
+		console.log(err);
+	}
 
 	try{
 		if( mensaje.COD == 105 ){
-
 			if( ! (_.contains(IPes,mensaje.IP)) ){
-
-				$("#content-partidas").append( templates.available(mensaje) );
+				//si la IP que llegó no está dentro de las que ya 
+				//se conocían se agrega la partida a la pantalla de 
+				//disponibles
+				$("#content-partidas").append(templates.available(mensaje));
 				IPes.push(mensaje.IP);
-				$(".btn-join").on("click",function (){
+				$(".btn-join").on("click",function(){
 					conexionInicio($(this).data("ip"), 10022);
 				});
 			}
 		}
-	}catch(err){console.log(err);}
-
-});
-
-
-$('#aceptarNombre').on('click',function(){
-
-	if(! ($('#nombre').val() == '') ){
-		playerName = $('#nombre').val();
+	}catch(err){
+		console.log(err);
 	}
 
 });

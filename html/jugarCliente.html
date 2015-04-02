@@ -30,12 +30,6 @@
 			</div>
 		</div>
 
-		<div class="container">
-			<div class="row">
-				<a id="btn-regresarInicio" href="#" class="btn btn-danger">Inicio</a>
-			</div>
-		</div>
-		
 		<!-- Modal para solicitar la cantidad de cartones ON -->
 		<div id="myModal" class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
 		  <div class="modal-dialog modal-sm">
@@ -113,14 +107,24 @@
 			<li><span class="lead">&nbsp;<kbd class="img-circle"><%= NUMERO %></kbd></span></li>
 		</script>
 		<!-- Templates OFF -->
-
-
-		
 		<script src="../js/jquery.js"></script> 
 		<script src="../js/jugarCliente.js"></script> 
 		<script src="../js/bootstrap.min.js"></script>
 		<script src="../js/network.js"></script>
 		<script src="../js/toastr.js"></script>
+		<script>
+			$('#aceptarNumero').on('click',function(){
+
+				if(!($('#numero').val() == '')){
+					boardNumber = $('#numero').val();
+					conexion(global.IPserver, 10022);
+				}
+				else{
+					$('#numero').parent().addClass("has-error");
+				}
+
+			});
+		</script>
 		<script>			
 			$('#myModal').modal('show');
 			$('#numero').focus();
