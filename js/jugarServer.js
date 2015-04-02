@@ -58,7 +58,7 @@ function tcp(ip, port){
 	        
 	        console.log('DATA ' + sock.remoteAddress + ': ' + data);
 	        try {
-		        var message = JSON.parse(data)
+		        var message = JSON.parse(data);
 		    }
 		    catch (err){
 		    	console.log("ERROR");

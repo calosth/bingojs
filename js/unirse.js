@@ -2,30 +2,35 @@
 var IPes = [];
 var playerName = '';
 var net = require('net');
-var os = require('os');
-var ifaces = os.networkInterfaces();
-// global.myIP = ifaces.en1[1].address;
-global.ip = "10.0.3.4"
+
+var dgram = require('dgram');
+var clienteUDP = dgram.createSocket('udp4');
+
+global.myIP = function(){ 
+
+	var os = require('os');
+	var ifaces = os.networkInterfaces();
+	return ifaces.en1[1].address;
+
+ }();
+
+console.log(global.myIP);
 
 
 var templates = {
-
 	'available': _.template( $('script.availableTemplate').html() )
-
 };
 
 var conexionInicio = function(ip, port){
 	var HOST = ip;
 	var PORT = port;
 
-	var client = new network.net.Socket();
+	var client = new net.Socket();
 
 	var json = {
-
 		'COD':100,
 		'IP':global.myIP,
 		'CLIENTE':playerName,
-
 	};
 
 	global.IPserver = ip;
@@ -33,50 +38,43 @@ var conexionInicio = function(ip, port){
 	var mensaje = JSON.stringify(json);
 	
 	client.connect(PORT, HOST, function() {
-
 		client.write(mensaje);
-		// client.end();
-
 	});
 
 	client.on('data', function(data){
 
-		var mensaje = JSON.parse(data);
+		try{ var mensaje = JSON.parse(data); }
+		catch(err){ console.log(err); }
 
-		if(mensaje.COD == 101){
-
-			// client.destroy();
-			global.IDJuego = mensaje.IDJUEGO;
-			window.location.href = "jugarCliente.html";
-
-		}
+		try{
+			if(mensaje.COD == 101){
+				global.IDJuego = mensaje.IDJUEGO;
+				window.location.href = "jugarCliente.html";
+			}
+		}catch(err){ console.log(err); }
 
 	});
-
-
-
 };
 
-network.udp.on('message',function(message,remote){
+clienteUDP.on('message',function(message,remote){
 
-	mensaje = JSON.parse(message);
-	console.log(mensaje);
 
-	if( mensaje.COD == 105 ){
+	try{mensaje = JSON.parse(message);}
+	catch(err){console.log(err);}
 
-		if( ! (_.contains(IPes,mensaje.IP)) ){
+	try{
+		if( mensaje.COD == 105 ){
 
-			$("#content-partidas").append( templates.available(mensaje) );
+			if( ! (_.contains(IPes,mensaje.IP)) ){
 
-			IPes.push(mensaje.IP);
-
-			$(".btn-join").on("click",function (){
-
-				conexionInicio($(this).data("ip"), 10022);
-
-			});
+				$("#content-partidas").append( templates.available(mensaje) );
+				IPes.push(mensaje.IP);
+				$(".btn-join").on("click",function (){
+					conexionInicio($(this).data("ip"), 10022);
+				});
+			}
 		}
-	}
+	}catch(err){console.log(err);}
 
 });
 
@@ -90,4 +88,4 @@ $('#aceptarNombre').on('click',function(){
 });
 
 
-network.udp.bind(10022);
+clienteUDP.bind(10022);

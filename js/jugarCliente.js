@@ -2,9 +2,9 @@
 var boardNumber = '';
 var arregloCartones = []; // Arreglo de objetos que permite manejar los cartones del usuario
 var matrizReferencia = []; // Matrices que ayudan a verificar los aciertos
-var net = require('net');
-// var Player = require('player');
 
+var net = require('net');
+var _ = require('underscore');
 var prueba = [];
 
 //Objeto que contiene a los templates
@@ -42,26 +42,29 @@ var conexion = function(ip, port){
 
 	client.on('data', function(data){
 
-		message = JSON.parse( data );
-				
-		switch(message.COD){
-
-			//Cuando recibe los cartones
-			case 103:
-				carton = message;
-
-				console.log( message );
-				$('#boards-content').append(templates.board(message));
-		
-				if( delete carton['COD'] )
-					arregloCartones.push( carton );
-
-
-				break;			
-
-			default:
-
+		try{ 
+			message = JSON.parse( data ); 
 		}
+		catch(err){ console.log(err); }
+
+		try{
+			switch(message.COD){
+
+				//Cuando recibe los cartones
+				case 103:
+					carton = message;
+					$('#boards-content').append(templates.board(message));
+			
+					if( delete carton['COD'] )
+						arregloCartones.push( carton );
+
+					break;			
+
+				default:
+					break;
+
+			}
+		} catch(err){ console.log(err); }
 
 	});
 
@@ -85,44 +88,38 @@ var multicast = function(ip, clienteTCP){
 	 
 	socket.on("message", function ( data, rinfo ) {
 
-		var message = JSON.parse(data);
+		try{var message = JSON.parse(data); console.log(message);}
+		catch(err){console.log(err);}
 
-		switch(message.COD){
+		try{
+			switch(message.COD){
 
-			//Cuando el servidor indique que se comenzó a jugar
-			case 300:
+				//Cuando el servidor indique que se comenzó a jugar
+				case 300:
+					toastr.success('Comenzamos!','Info');
+					break;
 
-				toastr.success('Comenzamos!','Info');
+				case 301:
+					toastr.error('Ha finalizado la partida')
+					clienteTCP.destroy();
+					break;
 
-				// for(i in arregloCartones)
-					console.log( arregloCartones );
+				//Cuando el servidor canta un número
+				case 308:
 
+					$('ul.nav.nav-pills').append(templates.number(message));
+					$("."+message.NUMERO).addClass("info");
+
+					verificarNumeroLlegado( parseInt(message.NUMERO,10) );
+					verificarCarton( clienteTCP, arregloCartones );
+
+					break;
+
+				default:
 				break;
 
-			case 301:
-
-				toastr.error('Ha finalizado la partida')
-				clienteTCP.destroy();
-
-				break;
-
-			//Cuando el servidor canta un número
-			case 308:
-
-				$('ul.nav.nav-pills').append(templates.number(message));
-				$("."+message.NUMERO).addClass("info");
-				// document.getElementById(sonidoLlegoNumero).play();
-
-				// console.log( arregloCartones );
-
-				verificarNumeroLlegado( parseInt(message.NUMERO,10) );
-				verificarCarton( clienteTCP, arregloCartones );
-
-				break;
-
-			default:
-
-		}
+			}
+		}catch(err){console.log(err);}
 	});
 
 };
@@ -167,9 +164,6 @@ var verificarCarton = function( clienteTCP, arregloObjCartones ){
 	for( var i = 0; i < arregloObjCartones.length; i++ ){
 
 		matrizBinaria = matrizReferencia[i];
-		console.log('-------');
-		console.log( arregloObjCartones[i] );
-
 		/// Se envia la matriz binaria que corresponde para verificar
 		objBingoCompleto = bingoAlgunaGanancia(matrizBinaria, i); 
 
@@ -243,9 +237,3 @@ var bingoAlgunaGanancia = function( matrizBinaria, numeroCarton ){
 	return objetoVerificacion; 
 
 };
-
-
-
-
-
-
