@@ -1,5 +1,5 @@
-var boardNumber      = ''; //Cantidad de cartones que el cliente quiere
-var arregloCartones  = []; // Arreglo de objetos que permite manejar los cartones del usuario
+var      boardNumber = ''; //Cantidad de cartones que el cliente quiere
+var  arregloCartones = []; // Arreglo de objetos que permite manejar los cartones del usuario
 var matrizReferencia = []; // Matrices que ayudan a verificar los aciertos
 
 var net    =        require('net');
@@ -17,20 +17,31 @@ var conexion = function(ip, port){
 	var HOST =   ip;
 	var PORT = port;
 	var carton, message;
+	var referenciaNroCartones = 0;
 
 	var client = new net.Socket(); 
+
 
 	client.connect(PORT, HOST, function(){
 
 		//Cuando se cree la conexión solicitará 
-		//el nro de cartones que el cliente desea
-		
-		json = {
-			'COD':102,
-			'NROCARTONES':boardNumber
-		};
+		//el nro de cartones que el cliente desea	
 
-		client.write(JSON.stringify(json));
+		setInterval(function(){
+
+			if (referenciaNroCartones < boardNumber){
+				json = {
+					'COD':102,
+					'NROCARTONES':1
+				};
+				client.write(JSON.stringify(json));
+				referenciaNroCartones = referenciaNroCartones + 1;
+			}else{
+				clearInterval(this);
+			}
+
+		},100);
+
 
 		for( var i = 0; i < boardNumber; i++ ){
 			matrizReferencia.push([[0,0,0,0,0],[0,0,0,0,0],[0,0,1,0,0],[0,0,0,0,0],[0,0,0,0,0]]);
@@ -79,7 +90,7 @@ var multicast = function(ip, clienteTCP){
 	var        socket = dgram.createSocket('udp4');
 	var multicastPort = 					  5554;
 	 
-	socket.bind(multicastPort, '0.0.0.0',function(){
+	socket.bind(multicastPort, '0.0.0.0', function(){
 		
 		socket.setBroadcast(true);
 		socket.setMulticastTTL(1);

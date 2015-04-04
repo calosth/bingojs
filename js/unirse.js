@@ -53,7 +53,8 @@ clienteUDP.on('message',function(message,remote){
 	}
 
 	try{
-		if( mensaje.COD == 105 ){
+		console.log(mensaje);
+		if( mensaje.COD === 105 ){
 			if( ! (_.contains(IPes,mensaje.IP)) ){
 				//si la IP que llegó no está dentro de las que ya 
 				//se conocían se agrega la partida a la pantalla de 

@@ -27,6 +27,7 @@ var idCount = 0;
 // Calcular Hash de IP del servidor
 var md5 = require('MD5');
 var hashIP = md5(global.ip);
+console.log(typeof(hashIP));
 
 
 var port = 10022; // <<< -- cambiar a configuracion global
@@ -80,6 +81,8 @@ function tcp(ip, port){
 				        break;
 				    case 102:
 				    	var countCard = message.NROCARTONES;
+				    	console.log(message);
+
 
 				    	for (var i = 0; i < countCard; i++) {				    		
 			    			var card = [];
@@ -109,11 +112,9 @@ function tcp(ip, port){
 
 					    	var json = {
 					    		'COD':103,
-					    		'IDCARTON': idCount,
+					    		'IDCARTON': String(idCount),
 					    		'NUMEROS': card
 					    	};	
-
-
 
 					    	sleep(50);
 
