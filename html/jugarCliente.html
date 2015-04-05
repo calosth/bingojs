@@ -12,7 +12,7 @@
 	<nav class="navbar navbar-default navbar-static-top">
 		<div class="container">
 			<div class="navbar-header">
-				<a href="#" class="navbar-brand">BingoJS</a>
+				<a href="index.html" class="navbar-brand">BingoJS</a>
 			</div>
 			<div id="navbar" class="navbar-collapse collapse">
 				<ul class="nav navbar-nav navbar-right">
@@ -29,7 +29,7 @@
 				<h2>Bingo</h2>
 			</div>
 		</div>
-		
+
 		<!-- Modal para solicitar la cantidad de cartones ON -->
 		<div id="myModal" class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
 		  <div class="modal-dialog modal-sm">
@@ -53,44 +53,22 @@
 		</div>
 		<!-- Modal para solicitar la cantidad de cartones OFF -->
 
-		<!-- Modal que indica que comenzamos la partida ON -->
-		<div id="modalComenzamos" class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
-		  <div class="modal-dialog modal-sm">
-		    <div class="modal-content">
-				<div class="modal-header">
-					<h4>Comenzamos!</h4>
-				</div>			
-		    </div>
-		  </div>
-		</div>
-		<!-- Modal que indica que comenzamos la partida OFF -->
-		<!-- Modal que indica que comenzamos la partida ON -->
-		<div id="modalTermino" class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
-		  <div class="modal-dialog modal-sm">
-		    <div class="modal-content">
-				<div class="modal-header">
-					<h4>Se ha terminado la partida</h4>
-				</div>			
-		    </div>
-		  </div>
-		</div>
-		<!-- Modal que indica que comenzamos la partida OFF -->
-
-		<!-- aquí se colocarán los cartones que envíe el servidor -->
-		<div class="row" id="boards-content"></div>	
-
-		<!-- Numero jugados ON -->
-
+		<!-- Numero cantado ON -->
 		<div class="row">
-			<div class="text-center lead">
+<!-- 			<div class="text-center lead">
 				Últimos Numeros
-			</div>
+			</div> -->
 			<div class="col-md-10 col-md-offset-1 alert alert-dismissable alert-warning">
 				<ul class="nav nav-pills">
 
 				</ul>
 			</div>
 		</div>
+		<!-- Numero cantado OFF -->
+
+		<!-- aquí se colocarán los cartones que envíe el servidor -->
+		<div class="row" id="boards-content"></div>	
+
 
 		<!-- Templates ON -->
 		<script type="text/template" class="templateBoard">
@@ -126,15 +104,27 @@
 		</script>
 
 		<script type="text/template" class="Numbers">
-			<li><span class="badge lead"><%= NUMERO %></span></li>
+			<li><span class="lead">&nbsp;<kbd class="img-circle"><%= NUMERO %></kbd></span></li>
 		</script>
 		<!-- Templates OFF -->
-		<script src="../js/jquery.js"></script>
-		<script src="../js/underscore.js"></script>
+		<script src="../js/jquery.js"></script> 
+		<script src="../js/jugarCliente.js"></script> 
 		<script src="../js/bootstrap.min.js"></script>
 		<script src="../js/network.js"></script>
 		<script src="../js/toastr.js"></script>
-		<script src="../js/jugarCliente.js"></script>
+		<script>
+			$('#aceptarNumero').on('click',function(){
+
+				if(!($('#numero').val() == '')){
+					boardNumber = $('#numero').val();
+					conexion(global.IPserver, 10022);
+				}
+				else{
+					$('#numero').parent().addClass("has-error");
+				}
+
+			});
+		</script>
 		<script>			
 			$('#myModal').modal('show');
 			$('#numero').focus();

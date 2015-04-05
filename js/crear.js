@@ -2,7 +2,6 @@ var infoJuego 	= {}
 var os 			= require('os');
 var ifaces 		= os.networkInterfaces();
 global.ip 		= ifaces.en1[1].address;
-
 var port = 41234;
 
 $("#nombrePartida").on('click',function(){
@@ -29,19 +28,3 @@ $("#submit").on('click',function(){
 	}	
 
 });
-
- function playSound(soundFile) {
-        if(soundFile === undefined) return; 
-        var audio = document.createElement('audio');
-        audio.src = soundFile;
-       	audio.play();
-        // audio = undefined;
-        console.log('Hiii');
-
-    }
-
-// playSound('sounds-882-solemn.mp3');
-
-var play = require('play')
-console.log(play.Play());
-// play.sound('sound.wav');

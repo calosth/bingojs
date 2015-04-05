@@ -46,7 +46,7 @@ var tcp = function (ip, port){
 	        
 	        console.log('DATA ' + sock.remoteAddress + ': ' + data);
 	        try {
-		        var message = JSON.parse(data)
+		        var message = JSON.parse(data);
 		    }
 		    catch (err){
 		    	console.log("ERROR");
@@ -94,7 +94,7 @@ var tcp = function (ip, port){
 
 					    	var json = {
 					    		'COD':103,
-					    		'IDCARTON': idCount,
+					    		'IDCARTON': String(idCount),
 					    		'NUMEROS': card
 					    	};	
 

@@ -1,68 +1,83 @@
-//Cantidad de cartones que el cliente quiere
-var boardNumber = '';
-var arregloCartones = []; // Arreglo de objetos que permite manejar los cartones del usuario
+var      boardNumber = ''; //Cantidad de cartones que el cliente quiere
+var  arregloCartones = []; // Arreglo de objetos que permite manejar los cartones del usuario
 var matrizReferencia = []; // Matrices que ayudan a verificar los aciertos
-var net = require('net');
-// var Player = require('player');
 
-var prueba = [];
+var net    =        require('net');
+var _      = require('underscore');
 
 //Objeto que contiene a los templates
 var templates = {
-	'board': _.template( $('script.templateBoard').html() ),
-	'number':  _.template( $('script.Numbers').html() )
+	'board' :  _.template( $('script.templateBoard').html() ),
+	'number':        _.template( $('script.Numbers').html() )
 };
 
 var conexion = function(ip, port){
 
-	var json = {};
-	var HOST = ip;
+	var json =   {};
+	var HOST =   ip;
 	var PORT = port;
-	var carton;
-	var client = new net.Socket();
-	var message;
+	var carton, message;
+	var referenciaNroCartones = 0;
+
+	var client = new net.Socket(); 
+
 
 	client.connect(PORT, HOST, function(){
 
-		
+		//Cuando se cree la conexión solicitará 
+		//el nro de cartones que el cliente desea	
 
-		//Apenas se conecte solicitará la cantidad de cartones
-		json = {
-			'COD':102,
-			'NROCARTONES':boardNumber
-		};
+		setInterval(function(){
 
-		client.write(JSON.stringify(json));
+			if (referenciaNroCartones < boardNumber){
+				json = {
+					'COD':102,
+					'NROCARTONES':1
+				};
+				client.write(JSON.stringify(json));
+				referenciaNroCartones = referenciaNroCartones + 1;
+			}else{
+				clearInterval(this);
+			}
 
-		for( var i = 0; i < boardNumber; i++ )
-			matrizReferencia.push( [[0,0,0,0,0],[0,0,0,0,0],[0,0,1,0,0],[0,0,0,0,0],[0,0,0,0,0]] );
+		},100);
 
+
+		for( var i = 0; i < boardNumber; i++ ){
+			matrizReferencia.push([[0,0,0,0,0],[0,0,0,0,0],[0,0,1,0,0],[0,0,0,0,0],[0,0,0,0,0]]);
+		}
 
 		multicast('239.1.2.3', client);
+
 	});
 
 	client.on('data', function(data){
 
+		try{
+			message = JSON.parse(data);
+		}catch(err){
+			console.log(err); 
+		}
 
-		message = JSON.parse( data );
-				
-		switch(message.COD){
+		try{
+			switch(message.COD){
 
-			//Cuando recibe los cartones
-			case 103:
-				carton = message;
+				//Cuando recibe los cartones
+				case 103:
+					carton = message;
+					$('#boards-content').append(templates.board(message));
+			
+					if( delete carton['COD'] )
+						arregloCartones.push( carton );
 
-				console.log( message );
-				$('#boards-content').append(templates.board(message));
-		
-				if( delete carton['COD'] )
-					arregloCartones.push( carton );
+					break;			
 
+				default:
+					break;
 
-				break;			
-
-			default:
-
+			}
+		} catch(err){
+			console.log(err); 
 		}
 
 	});
@@ -71,13 +86,11 @@ var conexion = function(ip, port){
 
 var multicast = function(ip, clienteTCP){
 
-	var dgram = require('dgram');
-	var socket = dgram.createSocket('udp4');
-	var multicastPort = 5554;
-	var message;
+	var         dgram = 		  require('dgram');
+	var        socket = dgram.createSocket('udp4');
+	var multicastPort = 					  5554;
 	 
-	// socket.addMembership(multicastAddress);
-	socket.bind(multicastPort, '0.0.0.0',function(){
+	socket.bind(multicastPort, '0.0.0.0', function(){
 		
 		socket.setBroadcast(true);
 		socket.setMulticastTTL(1);
@@ -85,79 +98,68 @@ var multicast = function(ip, clienteTCP){
 
 	});
 	 
-	socket.on("message", function ( data, rinfo ) {
+	socket.on("message", function(data, rinfo){
 
-		var message = JSON.parse(data);
+		try{
+			// Se intenta convertir lo llegado a un json
+			var message = JSON.parse(data);
+		}catch(err){
+			console.log(err);
+		}
 
-		switch(message.COD){
+		try{
+			//Intenta decidir qué hacer con el mensaje llegado
+			switch(message.COD){
 
-			//Cuando el servidor indique que se comenzó a jugar
-			case 300:
+				//Cuando el servidor indique que se comenzó a jugar
+				case 300:
+					toastr.success('Comenzamos!','Info');
+					break;
+				//Cuando el servidor finaliza la partida
+				case 301:
+					toastr.error('Ha finalizado la partida');
+					clienteTCP.destroy();
+					break;
 
-				toastr.success('Comenzamos!','Info');
+				//Cuando el servidor canta un número
+				case 308:
+					//Se agregan a la pantalla de juego el número
+					//que acaba de llegar
+					$('ul.nav.nav-pills').append(templates.number(message));
+					$("."+message.NUMERO).addClass("info");
+					//Se verifica el número llegado con los cartones
+					verificarNumeroLlegado( parseInt(message.NUMERO,10) );
+					verificarCarton(clienteTCP, arregloCartones);
 
-				// for(i in arregloCartones)
-					console.log( arregloCartones );
+					break;
 
+				default:
+				/* --- */
 				break;
 
-			case 301:
-
-				$('#modalTermino').modal('show').on('shown',function(){
-
-					window.setTimeout(function(){
-						$('modalTermino').modal('hide');
-					}, 1500);
-				});
-
-				window.location.href = 'index.html';
-
-				break;
-
-			//Cuando el servidor canta un número
-			case 308:
-
-				$('ul.nav.nav-pills').append(templates.number(message));
-				$("."+message.NUMERO).addClass("info");
-				// document.getElementById(sonidoLlegoNumero).play();
-
-				// console.log( arregloCartones );
-
-				verificarNumeroLlegado( parseInt(message.NUMERO,10) );
-				verificarCarton( clienteTCP, arregloCartones );
-
-				break;
-
-			default:
-
+			}
+		} catch(err){
+			// Ocurrió algún error 
+			// Por lo general ocurre cuando se quiere acceder 
+			// a un Key que no está en el json
+			console.log(err);
 		}
 	});
 
 };
 
-$('#aceptarNumero').on('click',function(){
 
-	if(!($('#numero').val() == '')){
-		boardNumber = $('#numero').val();
-		conexion(global.IPserver, 10022);
-	}
-	else{
-		$('#numero').parent().addClass("has-error");
-	}
+var verificarNumeroLlegado = function(numeroCantado){
 
-});
-
-var verificarNumeroLlegado = function( numeroCantado ){
-
-	var posicion;
-	var carton;
+	var    posicion;
+	var      carton;
 	var matrizCeros;
 
-	for( i in arregloCartones ){
+	for (i in arregloCartones){
 		carton = arregloCartones[i].NUMEROS;
-		for( j in carton ){
-			posicion = _.indexOf( carton[j], numeroCantado );
-			if( posicion  != -1 ){
+		for (j in carton){
+			posicion = _.indexOf(carton[j], numeroCantado);
+			if (posicion  != -1){
 				matrizReferencia[i][j][posicion] = 1;
 			}
 		}
@@ -165,63 +167,54 @@ var verificarNumeroLlegado = function( numeroCantado ){
 
 };
 
-var verificarCarton = function( clienteTCP, arregloObjCartones ){
+var verificarCarton = function(clienteTCP, arregloObjCartones){
 
-	var matrizBinaria = [];
-	var json = {};
+	var    matrizBinaria = [];
+	var             json = {};
 	var objBingoCompleto = {};
 
 
-	for( var i = 0; i < arregloObjCartones.length; i++ ){
+	for (var i = 0; i < arregloObjCartones.length; i++){
 
 		matrizBinaria = matrizReferencia[i];
-		console.log('-------');
-		console.log( arregloObjCartones[i] );
-
 		/// Se envia la matriz binaria que corresponde para verificar
 		objBingoCompleto = bingoAlgunaGanancia(matrizBinaria, i); 
 
 		//Si esta completo el carton
-		if( objBingoCompleto.verificacion ){ 
+		//se le envía un mensaje al server de que se tiene
+		//cartón lleno
+		if (objBingoCompleto.verificacion){ 
 
-			//Armo el objeto JSON
 			json = {
-
 				'COD':306,
 				'IDJUEGO':global.IDJuego,
 				'IDCARTON':arregloObjCartones[i].IDCARTON,
 				'NUMEROS':arregloObjCartones[i].NUMEROS,
 				'ACIERTOS':objBingoCompleto.arrayAciertos
-
 			}; 
-
-			//Envio el JSON
-			clienteTCP.write( JSON.stringify( json ) ); 
-
+			clienteTCP.write(JSON.stringify(json)); 
 		}
-
 	}
-
 };
 
-var bingoAlgunaGanancia = function( matrizBinaria, numeroCarton ){
+var bingoAlgunaGanancia = function(matrizBinaria, numeroCarton){
 
 	//Si esta lleno
-	var verificacionCompleto = 1;
-	// var verificacionVertical = 1;
+	var verificacionCompleto =  1;
 	//Objeto que retornará con los datos del carton
-	var objetoVerificacion = {}; 
+	var   objetoVerificacion = {}; 
 	//Array que estará en el objeto para retornar
-	var arrayAciertos = []; 
+	var        arrayAciertos = []; 
 
 	//Verifica si la matriz binaria esta llena de 1
-	for( i in matrizBinaria )
+	for (i in matrizBinaria){
 		verificacionCompleto = verificacionCompleto && !( _.contains( matrizBinaria[i], 0 ) );
+	}
 
 	// Si esta llena
-	if(verificacionCompleto){ 
-		for( i in matrizBinaria ){
-			for(j in matrizBinaria[i]){
+	if (verificacionCompleto){ 
+		for ( i in matrizBinaria ){
+			for (j in matrizBinaria[i]){
 				arrayAciertos.push(arregloCartones[numeroCarton].NUMEROS[i][j]);
 			}
 		}
@@ -234,26 +227,5 @@ var bingoAlgunaGanancia = function( matrizBinaria, numeroCarton ){
 
 		};
 	}
-	// else{
-
-
-	// 	for( i in matrizBinaria ){
-
-	// 		if( !( _.contains( matrizBinaria[i], 0 ) ) ){
-	// 			verificacionVertical = 1;
-	// 		}
-
-	// 	}
-
-	// }
-	
-	//retorna el objeto 
 	return objetoVerificacion; 
-
 };
-
-
-
-
-
-

@@ -80,6 +80,7 @@
 		</div>
 
 	</script>
+	
 	<script src="../js/jquery.js"></script>
 	<script src="../js/underscore.js"></script>
 	<script src="../js/underscore.observable.js"></script>
@@ -87,9 +88,18 @@
 	<script src="../js/network.js"></script>
 	<script src="../js/unirse.js"></script>
 	<script src="../js/bootstrap.min.js"></script>
+	
 	<script>			
 		$('#myModal').modal('show');
 		$('#nombre').focus();
+
+		$('#aceptarNombre').on('click',function(){
+
+			if(! ($('#nombre').val() == '') ){
+				playerName = $('#nombre').val();
+			}
+
+		});	
 	</script>
 
 </body>
