@@ -53,7 +53,6 @@ clienteUDP.on('message',function(message,remote){
 	}
 
 	try{
-		console.log(mensaje);
 		if( mensaje.COD === 105 ){
 			if( ! (_.contains(IPes,mensaje.IP)) ){
 				//si la IP que llegó no está dentro de las que ya 
