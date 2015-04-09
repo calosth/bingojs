@@ -2,7 +2,8 @@ var infoJuego 	= {}
 var os 			= require('os');
 var ifaces 		= os.networkInterfaces();
 global.ip 		= ifaces.en1[1].address;
-var port = 41234;
+var port 		= global.portUPD;
+var broadcast 	= global.ipBroadcast;
 
 $("#nombrePartida").on('click',function(){
 	$('#nombrePartida').parent().removeClass("has-error");
@@ -24,7 +25,7 @@ $("#submit").on('click',function(){
 	if(infoJuego.nombrePartida==''){
 		$("#nombrePartida").parent().addClass("has-error");
 	} else {
-		network.serverUDP(json, port, '255.255.255.255');		
+		network.serverUDP(json, port, broadcast );		
 	}	
 
 });

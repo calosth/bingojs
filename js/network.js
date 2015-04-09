@@ -2,7 +2,6 @@
 var dgram = require('dgram');
 var network = {
 
-	listMessage: [1,2,3],
 	udp: dgram.createSocket('udp4'),
 	net: require('net'),
 	clientUDP: function(port){
@@ -42,11 +41,11 @@ var network = {
 		});	
 	},
 
-	multicast: function(json){
+	multicast: function(json, ipMulticast, portMulticast){
 		var dgram = require('dgram');
 		var server = dgram.createSocket('udp4');	 
-		var multicastAddress = '239.1.2.3';
-		var multicastPort = 5554;
+		var multicastAddress = ipMulticast;
+		var multicastPort = portMulticast;
 
 		server.bind(multicastPort, '0.0.0.0',function(){
 			server.addMembership(multicastAddress);

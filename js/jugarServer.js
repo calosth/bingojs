@@ -2,7 +2,16 @@ var cards 	= []; 											// Array de objetos de cartones enviados
 var players = []; 											// Array de objetos de jugadores en partida
 var numbers = []; 											// Array de numeros enviados
 var idCount = 0;											// Numero de jugada *TEMP
-var port = 10022; 											// Puerto TCP *TEMP | Cambiar a variable de configuración global
+var portTCP = global.portTCP; 								// Puerto TCP 
+var portUDP = global.portUDP; 								// Puerto UDP
+var ipMulticast = global.ipMulticast;
+var ipBroadcast = global.ipBroadcast;
+var portMulticast = global.portMulticast;
+var portTCP = 10022; 								// Puerto TCP 
+var portUDP = 10022; 								// Puerto UDP
+var ipMulticast = '239.1.2.3';
+var ipBroadcast = '255.255.255.255';
+var portMulticast = 5554;
 var intervalCantarjugada; 									// ID de intervalo de cantar jugada
 var intervalSendBroadcast;									// ID de intervalo de envio anunciar jugada
 var md5 = require('MD5');			
@@ -89,7 +98,7 @@ var tcp = function (ip, port){
 				    			}
 				
 				    		};
-					    	console.log(card.toString());
+
 					    	idCount = md5(card.toString());;
 
 					    	var json = {
@@ -122,7 +131,7 @@ var tcp = function (ip, port){
 			    			'COD': 302,
 			    			'IDJUEGO': hashIP
 			    		};
-			    		network.multicast(json);
+			    		network.multicast(json, ipMulticast, portMulticast);
 			    		
 			    		// Detener el canto de numeros 
 			    		clearInterval(intervalCantarjugada);
@@ -155,7 +164,7 @@ var tcp = function (ip, port){
 			        						'TIPOBINGO': bingoAceptado,
 			        						'CLIENTE': client
 			        					};
-			        					network.multicast(json);
+			        					network.multicast(json,ipMulticast, portMulticast);
 			        				} else {
 			        					toastr.error('Bingo no aceptado, ' + client,'Info');
 			        				}
@@ -178,7 +187,7 @@ var tcp = function (ip, port){
 	    sock.on('close', function(data) {
 	        console.log('CLOSED: ' + sock.remoteAddress +' '+ sock.remotePort);
 	    	for (var w in players){
-		    	if(sock.remoteAddress === players[w].IP ){
+		    	if(sock.remoteAddress == players[w].IP ){
 				    	players.slice(w,1);
 		    	}	
 	    	}
@@ -197,7 +206,8 @@ var sendBroadcast = function() {
 		'SALA': global.infoJuego.nombrePartida
 	};
 	intervalSendBroadcast = setInterval(function(){
-		network.serverUDP(json, port, '255.255.255.255');	
+		console.log(portUDP);
+		network.serverUDP(json, portUDP, ipBroadcast);	
 	}, 1000);
 }
 
@@ -214,7 +224,7 @@ var cantar = function (){
 				'IPJUEGO': hashIP									
 			};
 
-	    network.multicast(json); // Enviar anuncio de inicio de juego
+	    network.multicast(json, ipMulticast, portMulticast); // Enviar anuncio de inicio de juego
 
 		$(this).addClass('disabled');
 		$(this).off();
@@ -242,7 +252,7 @@ var cantar = function (){
 
 			quantity = quantity + 1;
 
-			network.multicast(json); // Envio del numero cantado
+			network.multicast(json, ipMulticast, portMulticast); // Envio del numero cantado
 
 			$('ul.nav.nav-pills').append(templates.number(json)); // Refresco IU
 
@@ -251,15 +261,14 @@ var cantar = function (){
 	});
 
 
-	$("#btn-FinalizarPartida").on('click',function(){
+$("#btn-FinalizarPartida").on('click',function(){
 		clearInterval(intervalCantarjugada);
 		json = {
 			'COD': 301,
 			'IDJUEGO': hashIP
 		};
-		network.multicast(json);
+		network.multicast(json, ipMulticast, portMulticast);
 		window.location.href = "index.html";
-		// Implementa el envio en multicast de fin de juego
 	});
 
 }
@@ -270,7 +279,7 @@ var BingoCantado = function (){
 			'COD': 302,
 			'IPJUEGO': hashIP									// <<<-----------
 		};
-	network.multicast(json)
+	network.multicast(json, ipMulticast, portMulticast)
 };
 
 var BingoAceptado = function (){
@@ -281,7 +290,7 @@ var BingoAceptado = function (){
 			'TIPOBINGO': 1,
 			'CLIENTE': 'cliente'								// <<<-----------
 		};
-	network.multicast(json);
+	network.multicast(json, ipMulticast, portMulticast);
 };
 
 var comprobarBingo = function(card, numerosCantados){
@@ -346,6 +355,6 @@ var comprobarBingo = function(card, numerosCantados){
 	return false
 }
 
-tcp(global.ip, port);
+tcp(global.ip, portTCP);
 sendBroadcast();
 cantar();
