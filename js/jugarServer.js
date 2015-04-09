@@ -1,47 +1,34 @@
-
-// Assets
-
-
-function getRandomInt(min, max) {
-  return Math.floor(Math.random() * (max - min)) + min;
-}
-
-function sleep(milliseconds) {
-  var start = new Date().getTime();
-  for (var i = 0; i < 1e7; i++) {
-    if ((new Date().getTime() - start) > milliseconds){
-      break;
-    }
-  }
-}
-
-// Variable de cartones enviados
-var cards = [];
-var players = [];
-var numbers = [];
-var intervalCantarjugada;
-var idCount = 0;
-
-// var Player1 = require('player');
-
-// Calcular Hash de IP del servidor
-var md5 = require('MD5');
-var hashIP = md5(global.ip);
-console.log(typeof(hashIP));
-
-
-var port = 10022; // <<< -- cambiar a configuracion global
-
-
-
+var cards 	= []; 											// Array de objetos de cartones enviados
+var players = []; 											// Array de objetos de jugadores en partida
+var numbers = []; 											// Array de numeros enviados
+var idCount = 0;											// Numero de jugada *TEMP
+var port = 10022; 											// Puerto TCP *TEMP | Cambiar a variable de configuración global
+var intervalCantarjugada; 									// ID de intervalo de cantar jugada
+var intervalSendBroadcast;									// ID de intervalo de envio anunciar jugada
+var md5 = require('MD5');			
+var hashIP = md5(global.ip);								// Hash de IP del servidor
 var templates = {
-	'number':  _.template( $('script.Numbers').html() ),
-	'players':  _.template( $('script.Players').html() )
+	'number':  _.template($('script.Numbers').html()),		// Templates de lista numeros cantados
+	'players':  _.template($('script.Players').html())		// Templates de tabla de jugadores
 };
 
 
+var functionsAssets = {
+	getRandomInt: function (min, max) {
+		return Math.floor(Math.random() * (max - min)) + min;
+	},
 
-function tcp(ip, port){
+	sleep: function (milliseconds) {
+		var start = new Date().getTime();
+		for (var i = 0; i < 1e7; i++) {
+			if ((new Date().getTime() - start) > milliseconds){
+				  break;
+			}
+		}
+	}
+}
+
+var tcp = function (ip, port){
 	var net = network.net
 	var HOST = ip;
 	var PORT = port;
@@ -74,17 +61,14 @@ function tcp(ip, port){
 		        		};
 		        		// var message = new Buffer(json);
 				        sock.write(JSON.stringify(json));
-				        message.cards = []
-				        players.push(message)
+				        message.cards = [];
+				        players.push(message);
+				        console.log(message);
 				        // Rendereo al cliente en la interfaz
 				        $('#players').html(templates.players(players));
 				        break;
 				    case 102:
-				    	var countCard = message.NROCARTONES;
-				    	console.log(message);
-
-
-				    	for (var i = 0; i < countCard; i++) {				    		
+				    	for (var i = 0; i < message.NROCARTONES; i++) {				    		
 			    			var card = [];
 			    			var min, max = 0;
 				    		for (var j = 1; j <= 5; j++) {
@@ -93,21 +77,19 @@ function tcp(ip, port){
 				    			max = 15 * j;
 				    			var count = 0;
 				    			while(count < 5) {
-				    				var number = getRandomInt(min, max + 1);
-				    				if( !(_.contains(row,number)) ){
+				    				var number = functionsAssets.getRandomInt(min, max + 1);
+				    				if(!(_.contains(row,number))){
 					    				row.push(number);
 					    				count += 1;
 				    				};
 				    			};
-				    			card.push(row)
+				    			card.push(row);
 				    			if (j == 3){
 				    				row[2] = 0;
 				    			}
 				
 				    		};
 					    	
-
-
 					    	idCount = idCount + 1;
 
 					    	var json = {
@@ -116,10 +98,8 @@ function tcp(ip, port){
 					    		'NUMEROS': card
 					    	};	
 
-					    	sleep(50);
-
-					    	var variable = JSON.stringify(json);
-					    	sock.write(variable); 				    	
+					    	functionsAssets.sleep(50);
+					    	sock.write(JSON.stringify(json)); 				    	
 					    	
 					    	// formatear json para almacenar
 					    	if( delete json['COD'] )
@@ -188,6 +168,7 @@ function tcp(ip, port){
 		    }
 		    catch(err){
 		    	toastr.error('Ha ocurrido un error con el cliente ' + sock.remoteAddress + ' '+ err,'Error');
+		    	toastr.options.timeOut = 3000;
 		    }
 	        // Write the data back to the socket, the client will receive it as data from the server
 	        
@@ -208,69 +189,64 @@ function tcp(ip, port){
 	}).listen(PORT, HOST);
 };
 
-tcp(global.ip, port);
-
-
-var intervalSendBroadcast
 // Envio cada segundo el broadcast con la partida
-function sendBroadcast() {
-	var json1 = {
+var sendBroadcast = function() {
+	var json = {
 		'COD': 105,
 		'IP': global.ip,
 		'SALA': global.infoJuego.nombrePartida,
 	};
 	intervalSendBroadcast = setInterval(function(){
-		network.serverUDP(json1, port, '255.255.255.255');		
-	},1000);
+		network.serverUDP(json, port, '255.255.255.255');		
+	}, 1000);
 }
 
-sendBroadcast()
+var cantar = function (){
 
-function cantar(){
-	// Variable de ID de intervalo de jugada
-
-	// Empezar Envio de cartones
-	$("#btn-empezar").on("click",function(){
-		$(this).addClass('disabled');
-		clearInterval(intervalSendBroadcast);
-		var quantity = 1;
-
-
+	// Empezar envio de cartones
+	$('#btn-empezar').on('click',function(){
+		
+		var quantity = 1;	// cantidad de cartones enviados
+		var number;			// numero a cantar
 		// Anunciando inicio de juego
 		var json = {
 				'COD': 300,
-				'IPJUEGO': hashIP									// <<<-----------
+				'IPJUEGO': hashIP									
 			};
-	    network.multicast(json);
 
-		var number;
+	    network.multicast(json); // Enviar anuncio de inicio de juego
 
-		// Intervalo de tiempo que canta numeros
+		$(this).addClass('disabled');
+		$(this).off();
+		
+		clearInterval(intervalSendBroadcast); 
 
-		// var player1 = new Player1('sounds-882-solemn.mp3');
+
 		intervalCantarjugada = setInterval(function(){
 
 			if(numbers.length === 75)
 				return
 
 			do{
-				number = getRandomInt(1,76);
+				number = functionsAssets.getRandomInt(1,76);
 			}while( _.contains(numbers,number) );
+
 			numbers.push(number)
+
 			var json = {
 				'COD':308,
-				'IPJUEGO': hashIP,									// <<<-----------
+				'IPJUEGO': hashIP,									
 				'NROJUGADA':quantity,
 				'NUMERO': number
 			};
 
 			quantity = quantity + 1;
-			network.multicast(json);
-			// player1.play()
-			$('ul.nav.nav-pills').append(templates.number(json));
 
-		},100);
+			network.multicast(json); // Envio del numero cantado
 
+			$('ul.nav.nav-pills').append(templates.number(json)); // Refresco IU
+
+		},1000);
 
 	});
 
@@ -288,9 +264,7 @@ function cantar(){
 
 }
 
-cantar();
-
-function BingoCantado(){
+var BingoCantado = function (){
 	// Bingo cantado
 	var json = {
 			'COD': 302,
@@ -299,7 +273,7 @@ function BingoCantado(){
 	network.multicast(json)
 };
 
-function BingoAceptado(){
+var BingoAceptado = function (){
 	// Bingo aceptado
 	var json = {
 			'COD': 307,
@@ -307,13 +281,16 @@ function BingoAceptado(){
 			'TIPOBINGO': 1,
 			'CLIENTE': 'cliente'								// <<<-----------
 		};
-	network.multicast(json)
+	network.multicast(json);
 };
-
 
 var comprobarBingo = function(card, numerosCantados){
 
-	var matrizBinaria = [[0,0,0,0,0],[0,0,0,0,0],[0,0,1,0,0],[0,0,0,0,0],[0,0,0,0,0]];
+	var rowHorizontal 			= [];
+	var rowDiagonalPrincipal 	= [];
+	var rowDiagonalSecundaria 	= [];	
+	var verificacion 			= 1; 	//Si esta lleno
+	var matrizBinaria 			= [[0,0,0,0,0],[0,0,0,0,0],[0,0,1,0,0],[0,0,0,0,0],[0,0,0,0,0]];
 
 	// Marcar matriz matrizBinaria
 	for (var i = 0; i < numerosCantados.length; i++){
@@ -324,12 +301,6 @@ var comprobarBingo = function(card, numerosCantados){
 			}
 		}
 	};
-
-	var rowHorizontal = [];
-	var rowDiagonalPrincipal = [];
-	var rowDiagonalSecundaria = [];	
-	//Si esta lleno
-	var verificacion = 1; 
 
 	//Verifica si la matriz binaria esta llena de 1
 	for(var i =0; i < 5; i++ )
@@ -374,3 +345,7 @@ var comprobarBingo = function(card, numerosCantados){
 	
 	return false
 }
+
+tcp(global.ip, port);
+sendBroadcast();
+cantar();
