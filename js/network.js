@@ -30,14 +30,14 @@ var network = {
 		var server = dgram.createSocket('udp4');
 
 		var PORT = port;
-		var HOST = '255.255.255.255';
+		var HOST = host;
 		var message = new Buffer(JSON.stringify(json));
 		server.bind(function(){
 			server.setBroadcast(true);
 		});
 		server.send(message, 0, message.length, PORT, HOST,	function(err, bytes){
 			if(err) throw err;
-			// console.log('UDP message sent to ' + HOST + ' : ' + PORT);
+			console.log('UDP message sent to ' + HOST + ' : ' + PORT);
 			server.close();
 		});	
 	},

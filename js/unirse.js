@@ -46,7 +46,7 @@ var conexionInicio = function(ip, port){
 
 clienteUDP.on('message',function(message,remote){
 
-	try{
+	try{		
 		mensaje = JSON.parse(message);
 	}catch(err){
 		console.log(err);

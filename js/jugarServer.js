@@ -98,7 +98,7 @@ var tcp = function (ip, port){
 					    		'NUMEROS': card
 					    	};	
 
-					    	functionsAssets.sleep(50);
+					    	functionsAssets.sleep(200);
 					    	sock.write(JSON.stringify(json)); 				    	
 					    	
 					    	// formatear json para almacenar
@@ -194,10 +194,10 @@ var sendBroadcast = function() {
 	var json = {
 		'COD': 105,
 		'IP': global.ip,
-		'SALA': global.infoJuego.nombrePartida,
+		'SALA': global.infoJuego.nombrePartida
 	};
 	intervalSendBroadcast = setInterval(function(){
-		network.serverUDP(json, port, '255.255.255.255');		
+		network.serverUDP(json, port, '10.0.255.255');	
 	}, 1000);
 }
 
