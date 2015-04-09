@@ -89,8 +89,8 @@ var tcp = function (ip, port){
 				    			}
 				
 				    		};
-					    	
-					    	idCount = md5(card);;
+					    	console.log(card.toString());
+					    	idCount = md5(card.toString());;
 
 					    	var json = {
 					    		'COD':103,
@@ -178,7 +178,7 @@ var tcp = function (ip, port){
 	    sock.on('close', function(data) {
 	        console.log('CLOSED: ' + sock.remoteAddress +' '+ sock.remotePort);
 	    	for (var w in players){
-		    	if(sock.remoteAddress == players[w].IP ){
+		    	if(sock.remoteAddress === players[w].IP ){
 				    	players.slice(w,1);
 		    	}	
 	    	}
