@@ -4,9 +4,9 @@
   "single-instance": false,
   "window": {
     "title": "BingoProtocol",
-    "frame": true,
+    "frame": false,
     "toolbar": true,
-    "width": 600,
+    "width": 800,
     "height": 600,
     "min_width": 400,
     "min_height": 300,
