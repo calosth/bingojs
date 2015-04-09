@@ -269,7 +269,7 @@ function cantar(){
 			// player1.play()
 			$('ul.nav.nav-pills').append(templates.number(json));
 
-		},1000);
+		},100);
 
 
 	});

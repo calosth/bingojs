@@ -27,20 +27,11 @@ var conexion = function(ip, port){
 		//Cuando se cree la conexión solicitará 
 		//el nro de cartones que el cliente desea	
 
-		setInterval(function(){
-
-			if (referenciaNroCartones < boardNumber){
-				json = {
-					'COD':102,
-					'NROCARTONES':1
-				};
-				client.write(JSON.stringify(json));
-				referenciaNroCartones = referenciaNroCartones + 1;
-			}else{
-				clearInterval(this);
-			}
-
-		},100);
+		json = {
+			'COD':102,
+			'NROCARTONES':boardNumber
+		};
+		client.write(JSON.stringify(json));
 
 
 		for( var i = 0; i < boardNumber; i++ ){
@@ -103,6 +94,7 @@ var multicast = function(ip, clienteTCP){
 		try{
 			// Se intenta convertir lo llegado a un json
 			var message = JSON.parse(data);
+			console.log(message);
 		}catch(err){
 			console.log(err);
 		}

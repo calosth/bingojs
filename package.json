@@ -1,6 +1,7 @@
 {
   "name": "bingojs",
   "main": "./html/index.html",
+  "single-instance": false,
   "window": {
     "title": "BingoProtocol",
     "frame": true,
