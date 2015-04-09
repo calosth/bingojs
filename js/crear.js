@@ -24,7 +24,7 @@ $("#submit").on('click',function(){
 	if(infoJuego.nombrePartida==''){
 		$("#nombrePartida").parent().addClass("has-error");
 	} else {
-		network.serverUDP(json, port, '10.0.255.255');		
+		network.serverUDP(json, port, '255.255.255.255');		
 	}	
 
 });

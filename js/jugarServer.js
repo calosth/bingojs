@@ -90,7 +90,7 @@ var tcp = function (ip, port){
 				
 				    		};
 					    	
-					    	idCount = idCount + 1;
+					    	idCount = md5(card);;
 
 					    	var json = {
 					    		'COD':103,
@@ -106,8 +106,8 @@ var tcp = function (ip, port){
 						    	cards.push(json);
 
 					    	// Guardar el carton del jugador
-					    	for (var w in players){
-						    	if(sock.remoteAddress == players[w].IP ){
+					    	for (var w = 0 ; w < players.length; w++) {
+						    	if(sock.remoteAddress === players[w].IP ){
 							    		players[w].cards.push(json)
 						    	}	
 					    	}
@@ -157,7 +157,7 @@ var tcp = function (ip, port){
 			        					};
 			        					network.multicast(json);
 			        				} else {
-			        					// Hacer si el bingo no se acepto
+			        					toastr.error('Bingo no aceptado, ' + client,'Info');
 			        				}
 
 			        			}
@@ -197,7 +197,7 @@ var sendBroadcast = function() {
 		'SALA': global.infoJuego.nombrePartida
 	};
 	intervalSendBroadcast = setInterval(function(){
-		network.serverUDP(json, port, '10.0.255.255');	
+		network.serverUDP(json, port, '255.255.255.255');	
 	}, 1000);
 }
 

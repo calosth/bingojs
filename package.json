@@ -3,7 +3,7 @@
   "main": "./html/index.html",
   "window": {
     "title": "BingoProtocol",
-    "frame": false,
+    "frame": true,
     "toolbar": true,
     "width": 600,
     "height": 600,
