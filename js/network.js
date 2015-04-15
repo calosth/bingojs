@@ -36,7 +36,7 @@ var network = {
 		});
 		server.send(message, 0, message.length, PORT, HOST,	function(err, bytes){
 			if(err) throw err;
-			console.log('UDP message sent to ' + HOST + ' : ' + PORT);
+			// console.log('UDP message sent to ' + HOST + ' : ' + PORT);
 			server.close();
 		});	
 	},

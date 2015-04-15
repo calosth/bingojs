@@ -4,6 +4,7 @@ var matrizReferencia = []; // Matrices que ayudan a verificar los aciertos
 
 var net    =        require('net');
 var _      = require('underscore');
+var auxCliente;
 
 //Objeto que contiene a los templates
 var templates = {
@@ -20,6 +21,7 @@ var conexion = function(ip, port){
 	var referenciaNroCartones = 0;
 
 	var client = new net.Socket(); 
+	auxCliente = client;
 
 
 	client.connect(PORT, HOST, function(){

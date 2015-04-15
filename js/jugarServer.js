@@ -2,11 +2,11 @@ var cards 	= []; 											// Array de objetos de cartones enviados
 var players = []; 											// Array de objetos de jugadores en partida
 var numbers = []; 											// Array de numeros enviados
 var idCount = 0;											// Numero de jugada *TEMP
-var portTCP = global.portTCP; 								// Puerto TCP 
-var portUDP = global.portUDP; 								// Puerto UDP
-var ipMulticast = global.ipMulticast;
-var ipBroadcast = global.ipBroadcast;
-var portMulticast = global.portMulticast;
+// var portTCP = global.portTCP; 								// Puerto TCP 
+// var portUDP = global.portUDP; 								// Puerto UDP
+// var ipMulticast = global.ipMulticast;
+// var ipBroadcast = global.ipBroadcast;
+// var portMulticast = global.portMulticast;
 var portTCP = 10022; 								// Puerto TCP 
 var portUDP = 10022; 								// Puerto UDP
 var ipMulticast = '239.1.2.3';
@@ -16,6 +16,7 @@ var intervalCantarjugada; 									// ID de intervalo de cantar jugada
 var intervalSendBroadcast;									// ID de intervalo de envio anunciar jugada
 var md5 = require('MD5');			
 var hashIP = md5(global.ip);								// Hash de IP del servidor
+var net = require('net');
 var templates = {
 	'number':  _.template($('script.Numbers').html()),		// Templates de lista numeros cantados
 	'players':  _.template($('script.Players').html())		// Templates de tabla de jugadores
@@ -37,166 +38,169 @@ var functionsAssets = {
 	}
 }
 
-var tcp = function (ip, port){
-	var net = network.net
-	var HOST = ip;
-	var PORT = port;
+// var tcp = function (ip, port){
+// 	var HOST = ip;
+// 	var PORT = port;
 
-	// Create a server instance, and chain the listen function to it
-	// The function passed to net.createServer() becomes the event handler for the 'connection' event
-	// The sock object the callback function receives UNIQUE for each connection
-	net.createServer(function(sock) {
-	    
-	    // We have a connection - a socket object is assigned to the connection automatically
-	    console.log('CONNECTED: ' + sock.remoteAddress +':'+ sock.remotePort);
-	    
-	    // Add a 'data' event handler to this instance of socket
-	    sock.on('data', function(data) {
-	        
-	        console.log('DATA ' + sock.remoteAddress + ': ' + data);
-	        try {
-		        var message = JSON.parse(data);
-		    }
-		    catch (err){
-		    	console.log("ERROR");
-		    }
 
-		    try {
-		        switch(message.COD){
-		        	case 100:
-		        		var json = {
-		        			'COD': 101,
-		        			'IDJUEGO': hashIP
-		        		};
-		        		// var message = new Buffer(json);
-				        sock.write(JSON.stringify(json));
-				        message.cards = [];
-				        players.push(message);
-				        console.log(message);
-				        // Rendereo al cliente en la interfaz
-				        $('#players').html(templates.players(players));
-				        break;
-				    case 102:
-				    	for (var i = 0; i < message.NROCARTONES; i++) {				    		
-			    			var card = [];
-			    			var min, max = 0;
-				    		for (var j = 1; j <= 5; j++) {
-				    			var row = [];
-				    			min = max + 1;
-				    			max = 15 * j;
-				    			var count = 0;
-				    			while(count < 5) {
-				    				var number = functionsAssets.getRandomInt(min, max + 1);
-				    				if(!(_.contains(row,number))){
-					    				row.push(number);
-					    				count += 1;
-				    				};
-				    			};
-				    			card.push(row);
-				    			if (j == 3){
-				    				row[2] = 0;
-				    			}
-				
-				    		};
+net.createServer(function(sock) {
+        
+    sock.on('data', function(data) {
+        
+        try {
+	        var message = JSON.parse(data);
+	    }
+	    catch (err){
+	    	console.log("ERROR");
+	    }
 
-					    	idCount = md5(card.toString());;
-
-					    	var json = {
-					    		'COD':103,
-					    		'IDCARTON': String(idCount),
-					    		'NUMEROS': card
-					    	};	
-
-					    	functionsAssets.sleep(200);
-					    	sock.write(JSON.stringify(json)); 				    	
-					    	
-					    	// formatear json para almacenar
-					    	if( delete json['COD'] )
-						    	cards.push(json);
-
-					    	// Guardar el carton del jugador
-					    	for (var w = 0 ; w < players.length; w++) {
-						    	if(sock.remoteAddress === players[w].IP ){
-							    		players[w].cards.push(json)
-						    	}	
-					    	}
-
-				    	}
-				    	$('#players').html(templates.players(players));
-
-				    	break;
-
-			    	case 306:
-			    		var json = {
-			    			'COD': 302,
-			    			'IDJUEGO': hashIP
+	    try {
+	        switch(message.COD){
+	        	case 100:
+	        		var json = {
+	        			'COD': 101,
+	        			'IDJUEGO': hashIP
+	        		};
+	        		// var message = new Buffer(json);
+			        sock.write(JSON.stringify(json));
+			        message.cards = [];
+			        players.push(message);
+			        // console.log(message);
+			        // Rendereo al cliente en la interfaz
+			        $('#players').html(templates.players(players));
+			        break;
+			    case 102:
+			    	for (var i = 0; i < message.NROCARTONES; i++) {				    		
+		    			var card = [];
+		    			var min, max = 0;
+			    		for (var j = 1; j <= 5; j++) {
+			    			var row = [];
+			    			min = max + 1;
+			    			max = 15 * j;
+			    			var count = 0;
+			    			while(count < 5) {
+			    				var number = functionsAssets.getRandomInt(min, max + 1);
+			    				if(!(_.contains(row,number))){
+				    				row.push(number);
+				    				count += 1;
+			    				};
+			    			};
+			    			card.push(row);
+			    			if (j == 3){
+			    				row[2] = 0;
+			    			}
+			
 			    		};
-			    		network.multicast(json, ipMulticast, portMulticast);
-			    		
-			    		// Detener el canto de numeros 
-			    		clearInterval(intervalCantarjugada);
 
-			        	if(message.IDJUEGO == hashIP ){
-			        		// recorrer los cartones que he enviado
-	        				console.log(message.IDJUEGO);
-			        		for (i in cards){ 
-			        			if( cards[i].IDCARTON == message.IDCARTON ){
-			        				
-			        				
-			        				// comprobar matriz
-			        				var bingoAceptado = comprobarBingo(cards[i].NUMEROS, numbers);
-			        				if(bingoAceptado){
+				    	idCount = md5(card.toString());;
 
-			        					// Encontrar cliente ganador
-			        					var client = ''
-				        				for(var w in players){
-				        					for(var j in players[w].cards){
-					        					if(players[w].cards[j].IDCARTON == message.IDCARTON){
-					        						client = players[w].CLIENTE
-					        					}
-					        				}
-				        				} 
-				        				toastr.success('Hay Ganador!, ' + client,'Info');
-			        					// Hay ganador 
-			        					var json = {
-			        						'COD': 307,
-			        						'IDJUEGO': hashIP,
-			        						'TIPOBINGO': bingoAceptado,
-			        						'CLIENTE': client
-			        					};
-			        					network.multicast(json,ipMulticast, portMulticast);
-			        				} else {
-			        					toastr.error('Bingo no aceptado, ' + client,'Info');
-			        				}
+				    	var json = {
+				    		'COD':103,
+				    		'IDCARTON': String(idCount),
+				    		'NUMEROS': card
+				    	};	
 
-			        			}
-			        		}
-			        	}
-		        	default:
-		        }
-		    }
-		    catch(err){
-		    	toastr.error('Ha ocurrido un error con el cliente ' + sock.remoteAddress + ' '+ err,'Error');
-		    	toastr.options.timeOut = 3000;
-		    }
-	        // Write the data back to the socket, the client will receive it as data from the server
-	        
-	    });
-	    
-	    // Add a 'close' event handler to this instance of socket
-	    sock.on('close', function(data) {
-	        console.log('CLOSED: ' + sock.remoteAddress +' '+ sock.remotePort);
-	    	for (var w in players){
-		    	if(sock.remoteAddress == players[w].IP ){
-				    	players.slice(w,1);
-		    	}	
-	    	}
-	    	$('#players').html(templates.players(players));	        
+				    	functionsAssets.sleep(200);
+				    	sock.write(JSON.stringify(json)); 				    	
+				    	
+				    	// formatear json para almacenar
+				    	if( delete json['COD'] )
+					    	cards.push(json);
 
-	    });
-	    
-	}).listen(PORT, HOST);
-};
+				    	// Guardar el carton del jugador
+				    	for (var w = 0 ; w < players.length; w++) {
+					    	if(sock.remoteAddress === players[w].IP ){
+						    		players[w].cards.push(json)
+					    	}	
+				    	}
+
+			    	}
+			    	$('#players').html(templates.players(players));
+
+			    	break;
+
+		    	case 306:
+		    		var json = {
+		    			'COD': 302,
+		    			'IDJUEGO': hashIP
+		    		};
+		    		network.multicast(json, ipMulticast, portMulticast);
+		    		
+		    		// Detener el canto de numeros 
+		    		clearInterval(intervalCantarjugada);
+
+		        	if(message.IDJUEGO == hashIP ){
+		        		// recorrer los cartones que he enviado
+        				// console.log(message.IDJUEGO);
+		        		for (i in cards){ 
+		        			if( cards[i].IDCARTON == message.IDCARTON ){
+		        				
+		        				
+		        				// comprobar matriz
+		        				var bingoAceptado = comprobarBingo(cards[i].NUMEROS, numbers);
+		        				if(bingoAceptado){
+
+		        					// Encontrar cliente ganador
+		        					var client = ''
+			        				for(var w in players){
+			        					for(var j in players[w].cards){
+				        					if(players[w].cards[j].IDCARTON == message.IDCARTON){
+				        						client = players[w].CLIENTE
+				        					}
+				        				}
+			        				} 
+			        				toastr.success('Hay Ganador!, ' + client,'Info');
+		        					// Hay ganador 
+		        					var json = {
+		        						'COD': 307,
+		        						'IDJUEGO': hashIP,
+		        						'TIPOBINGO': bingoAceptado,
+		        						'CLIENTE': client
+		        					};
+		        					network.multicast(json,ipMulticast, portMulticast);
+		        				} else {
+		        					toastr.error('Bingo no aceptado, ' + client,'Info');
+		        				}
+
+		        			}
+		        		}
+		        	}
+	        	default:
+	        }
+	    }
+	    catch(err){
+	    	toastr.error('Ha ocurrido un error con el cliente ' + sock.remoteAddress + ' '+ err,'Error');
+	    	toastr.options.timeOut = 3000;
+	    }
+        // Write the data back to the socket, the client will receive it as data from the server
+        
+    });
+    
+    // Add a 'close' event handler to this instance of socket
+    sock.on('end', function(data) {
+    //     console.log('CLOSED: ' + sock.remoteAddress +' '+ sock.remotePort);
+    	console.log(data);
+    	for (var w in players){
+	    	if(sock.remoteAddress == players[w].IP ){
+			    	players.slice(w,1);
+	    	}	
+    	}
+    	$('#players').html(templates.players(players));	   
+
+    	sock.destroy();
+
+    });
+
+	sock.on('error', function(err){
+		if (err.code == 'EADDRINUSE') { 
+			console.log('alguien se salio');
+			sock.destroy();
+		}
+	});
+
+    
+}).listen(portTCP, global.ip);
+// };
 
 // Envio cada segundo el broadcast con la partida
 var sendBroadcast = function() {
@@ -206,7 +210,7 @@ var sendBroadcast = function() {
 		'SALA': global.infoJuego.nombrePartida
 	};
 	intervalSendBroadcast = setInterval(function(){
-		console.log(portUDP);
+		// console.log(portUDP);
 		network.serverUDP(json, portUDP, ipBroadcast);	
 	}, 1000);
 }
@@ -277,7 +281,7 @@ var BingoCantado = function (){
 	// Bingo cantado
 	var json = {
 			'COD': 302,
-			'IPJUEGO': hashIP									// <<<-----------
+			'IPJUEGO': hashIP
 		};
 	network.multicast(json, ipMulticast, portMulticast)
 };
@@ -288,7 +292,7 @@ var BingoAceptado = function (){
 			'COD': 307,
 			'IPJUEGO': hashIP,
 			'TIPOBINGO': 1,
-			'CLIENTE': 'cliente'								// <<<-----------
+			'CLIENTE': 'cliente'
 		};
 	network.multicast(json, ipMulticast, portMulticast);
 };
@@ -355,6 +359,6 @@ var comprobarBingo = function(card, numerosCantados){
 	return false
 }
 
-tcp(global.ip, portTCP);
+// tcp(global.ip, portTCP);
 sendBroadcast();
 cantar();
